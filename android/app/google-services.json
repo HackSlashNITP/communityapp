@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "320596142744",
+    "firebase_url": "https://chat-b254f-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "chat-b254f",
+    "storage_bucket": "chat-b254f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:320596142744:android:57dbe8bfcf178365d13eed",
+        "android_client_info": {
+          "package_name": "com.example.community_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAf2V1otWewIuhVSzfHYRHZSZIfkpDWabw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
