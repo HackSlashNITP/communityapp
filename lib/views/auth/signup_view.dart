@@ -1,21 +1,21 @@
 import 'package:communityapp/controllers/auth_controller.dart';
-import 'package:communityapp/models/user_model.dart';
 import 'package:communityapp/services/auth_service.dart';
+import 'package:communityapp/views/auth/login_view.dart';
 import 'package:communityapp/views/auth/register_view.dart';
-import 'package:communityapp/views/auth/signup_view.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class LoginView extends StatefulWidget {
-  const LoginView({super.key});
+class SignupView extends StatefulWidget {
+  const SignupView({super.key});
 
   @override
-  State<LoginView> createState() => _StateSigninView();
+  State<SignupView> createState() => _StateSignupView();
 }
 
-class _StateSigninView extends State<LoginView> {
+class _StateSignupView extends State<SignupView> {
   final controller = Get.put(AuthController());
+  final TextEditingController _usernamecontroller = TextEditingController();
   final TextEditingController _emailcontroller = TextEditingController();
   final TextEditingController _passwordcontroller = TextEditingController();
 
@@ -71,7 +71,7 @@ class _StateSigninView extends State<LoginView> {
               ),
               Container(
                 alignment: Alignment.center,
-                height: 300,
+                height: 325,
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -82,28 +82,57 @@ class _StateSigninView extends State<LoginView> {
                     const SizedBox(
                       height: 15,
                     ),
+                    Obx(
+                      () => Column(
+                        children: [
+                          TextField(
+                        controller: _usernamecontroller,
+                        decoration: const InputDecoration(
+                            hintText: 'Username',
+                            icon: Icon(Icons.person_2_outlined,
+                                color: Color.fromARGB(255, 65, 189, 115))),
+                        onChanged: (value) async {
+                          if (value.isNotEmpty) {
+                            controller.checkUsernameAvailibility(value);
+                          }
+                        },
+                      ),
+              
+                     controller.unameAvailiblitiy.value
+                          ? Container() // Display nothing if available
+                          : Text(
+                              "${_usernamecontroller.text} is not available",
+                              style: const TextStyle(
+                                  fontSize: 10, color: Colors.red),
+                              textAlign: TextAlign.right,
+                            ),
+                        ],
+                      )
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     TextField(
                       controller: _emailcontroller,
                       decoration: const InputDecoration(
-                          hintText: 'Email or username',
+                          hintText: 'Email',
                           icon: Icon(Icons.email_outlined,
                               color: Color.fromARGB(255, 65, 189, 115))),
                     ),
                     const SizedBox(
                       height: 10,
                     ),
-                    Obx(
-                      () => TextField(
+                  Obx(()=>   TextField(
                         controller: _passwordcontroller,
-                        obscureText: controller.loginHidePass.value,
+                        obscureText: controller.signupHidePass.value,
                         decoration: InputDecoration(
                             hintText: 'Password',
                             suffixIcon: IconButton(
                               onPressed: () {
-                                controller.toggleLoginPass();
+                                controller.toggleSignupPass();
                               },
                               icon: Icon(
-                                  controller.loginHidePass.value
+                                  controller.signupHidePass.value
                                       ? Icons.remove_red_eye
                                       : Icons.password_outlined,
                                   color:
@@ -111,23 +140,29 @@ class _StateSigninView extends State<LoginView> {
                             ),
                             icon: Icon(Icons.key,
                                 color: Color.fromARGB(255, 65, 189, 115))),
-                      ),
-                    ),
+                      ),),
+                    
                     const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () async {
-                        if (_emailcontroller.text.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text(
-                                      "Please input your email or username")));
-                        } else if (_passwordcontroller.text.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text("Please input your password")));
-                        } else {
-                          UserModel usr = await AuthService.Login(
-                              _emailcontroller.text, _passwordcontroller.text);
+                        bool isValid = await AuthService.validateInputs(
+                            _usernamecontroller.text,
+                            _emailcontroller.text,
+                            _passwordcontroller.text,
+                            context);
+                        if (isValid) {
+                          bool success = await AuthService.signIn(
+                            _usernamecontroller.text,
+                            _emailcontroller.text,
+                            _passwordcontroller.text,
+                          );
+                          if (success) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => RegisterView(
+                                        username: _usernamecontroller.text)));
+                          }
                         }
                       },
                       style: ButtonStyle(
@@ -136,7 +171,7 @@ class _StateSigninView extends State<LoginView> {
                                 255, 65, 189, 115)), // Set the background color
                       ),
                       child: const Text(
-                        'Login', // Change the text to "Sign In"
+                        'Sign In', // Change the text to "Sign In"
                         style: TextStyle(
                           color: Colors.white, // Set text color to white
                           fontWeight: FontWeight.bold, // Make the font bold
@@ -150,43 +185,32 @@ class _StateSigninView extends State<LoginView> {
                       text: TextSpan(
                         children: [
                           TextSpan(
-                            text: 'Don\'t have an account? ',
+                            text: 'Already have an account? ',
                             style: TextStyle(
                               fontSize: 14,
                               color: Colors.grey[400], // Light gray color
                             ),
                           ),
                           TextSpan(
-                            text: 'Sign Up',
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: Color.fromARGB(
-                                  255, 65, 189, 115), // Custom color
-                            ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const SignupView()));
-                              },
-                          ),
+                              text: 'Login',
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Color.fromARGB(
+                                    255, 65, 189, 115), // Custom color
+                              ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => LoginView()));
+                                }
+                              // Action when "Login" is tapped
+
+                              ),
                         ],
                       ),
-                    ),
-                    TextButton(
-                      child: Text(
-                        'Forgot password?',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[400], // Light gray color
-                        ),
-                      ),
-                      onPressed: () {
-                        AuthService.forgotPassword();
-                      },
                     ),
                   ],
                 ),
