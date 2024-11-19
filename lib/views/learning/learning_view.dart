@@ -52,7 +52,7 @@ class _LearningPageState extends State<LearningPage> {
                 ),
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Padding(
               padding: EdgeInsets.fromLTRB(screenWidth * 0.07, 0, 0, 0),
               child: Text(
@@ -63,7 +63,7 @@ class _LearningPageState extends State<LearningPage> {
                 ),
               ),
             ),
-            SizedBox(height: 28),
+            const SizedBox(height: 28),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
