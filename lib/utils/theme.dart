@@ -24,10 +24,11 @@ class AppTheme {
         brightness: Brightness.light,
       ),
 
+
       // AppBar Theme
       appBarTheme: AppBarTheme(
 
-        backgroundColor: Colors.transparent,
+        backgroundColor: ColorPalette.freshMintGreen,
         centerTitle: true,
         elevation: 0,
         titleTextStyle: GoogleFonts.katibeh(
