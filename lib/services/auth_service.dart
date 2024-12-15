@@ -65,7 +65,7 @@ class AuthService {
     };
     databaseReference.child(username).update(userObject);
   }
-
+   
   static Future<bool> validateInputs(String username, String email,
       String password, BuildContext context) async {
     List users = await getUsersList();
@@ -125,12 +125,14 @@ class AuthService {
 
       if (snapshot.exists) {
         Map<dynamic, dynamic> usersMap =
-            snapshot.value as Map<dynamic, dynamic>;
-        usersMap.forEach((key, value) {
-          if (value['email'] == email) {
-            return key;
-          } // Collect usernames
-        });
+        snapshot.value as Map<dynamic, dynamic>;
+
+        // Iterate through usersMap
+        for (var entry in usersMap.entries) {
+          if (entry.value['email'] == email) {
+            return entry.key; // Return the key (username) if found
+          }
+        }
       } else {
         print('No users found.');
       }
@@ -138,6 +140,7 @@ class AuthService {
       print('Error retrieving users: $error');
     }
 
+    // Return "Not found" if the email is not matched
     return "Not found";
   }
 
