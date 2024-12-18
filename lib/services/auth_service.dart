@@ -144,6 +144,7 @@ class AuthService {
     return "Not found";
   }
 
+
   static Future<List<String>> getEmailsList() async {
     List<String> emailsList = [];
 
@@ -216,6 +217,7 @@ class AuthService {
         final credential = await FirebaseAuth.instance
             .signInWithEmailAndPassword(
                 email: emailAddress, password: password);
+
         usr = await AuthService.saveUser(email);
         return usr;
       } on FirebaseAuthException catch (e) {
