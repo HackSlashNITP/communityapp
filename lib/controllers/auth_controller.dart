@@ -3,16 +3,19 @@ import 'package:get/get.dart';
 
 class AuthController extends GetxController {
   RxBool loginHidePass = true.obs;
+
   void toggleLoginPass() {
     loginHidePass.value = !loginHidePass.value;
   }
 
   RxBool signupHidePass = true.obs;
+
   void toggleSignupPass() {
     signupHidePass.value = !signupHidePass.value;
   }
 
   RxBool unameAvailiblitiy = true.obs;
+
   void checkUsernameAvailibility(String username) async {
     List users = await AuthService.getUsersList();
     if (users.contains(username)) {

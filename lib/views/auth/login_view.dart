@@ -1,6 +1,7 @@
 import 'package:communityapp/controllers/auth_controller.dart';
 import 'package:communityapp/models/user_model.dart';
 import 'package:communityapp/services/auth_service.dart';
+import 'package:communityapp/views/BottomNavigationBar.dart';
 import 'package:communityapp/views/auth/register_view.dart';
 import 'package:communityapp/views/auth/signup_view.dart';
 import 'package:communityapp/views/home/home_view.dart';
@@ -133,7 +134,7 @@ class _StateSigninView extends State<LoginView> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                  const HomeView()));
+                                   MainView()));
                         }
                       },
                       style: ButtonStyle(
