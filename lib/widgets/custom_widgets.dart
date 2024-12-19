@@ -1,3 +1,4 @@
+import 'package:communityapp/views/chat/chat_room.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:communityapp/views/home/home_view.dart';
@@ -7,17 +8,20 @@ import 'package:communityapp/views/learning/learning_view.dart';
 import 'package:communityapp/views/profile/profile_view.dart';
 
 class MainView extends StatelessWidget {
+  final String username;
   final BottomNavController bottomNavController = Get.put(BottomNavController());
-
-  final List<Widget> screens = [
-    HomeView(),
-    ChatView(),
-    LearningPage(),
-    ProfileView(),
-  ];
+  MainView({
+    required this.username,
+});
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> screens = [
+      HomeView(),
+      chat_view(username: username),
+      LearningPage(),
+      ProfileView(),
+    ];
     return Scaffold(
       body: Obx(() => screens[bottomNavController.selectedIndex.value]),
       bottomNavigationBar: Obx(() {

@@ -45,6 +45,7 @@ dependencies:
   cloudinary_api: ^1.0.0
   cloudinary_url_gen: ^1.0.0
   flutter_dotenv: ^5.2.1
+  intl: ^0.20.1
 
 
 dev_dependencies:
