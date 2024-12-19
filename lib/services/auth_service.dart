@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../widgets/custom_widgets.dart';
+
 FirebaseDatabase database = FirebaseDatabase.instance;
 DatabaseReference databaseReference = FirebaseDatabase.instance.ref('users');
 
@@ -207,8 +209,15 @@ class AuthService {
     return UserModel();
   }
 
+
   static Future<UserModel> Login(String email, String password) async {
     UserModel usr;
+
+
+    String sanitizeEmail(String email) {
+      return email.replaceAll('.', ','); // Replace '.' with ','
+    }
+
     if (!RegExp(r'^[a-zA-Z0-9._%+-]+@gmail\.com$').hasMatch(email)) {
       print("I am in username finder code");
       String emailAddress = await getEmailsthroughUsername(email);
@@ -216,9 +225,13 @@ class AuthService {
       try {
         final credential = await FirebaseAuth.instance
             .signInWithEmailAndPassword(
-                email: emailAddress, password: password);
+            email: emailAddress, password: password);
 
-        usr = await AuthService.saveUser(email);
+
+        usr = await AuthService.saveUser(sanitizeEmail(emailAddress));
+
+
+        Get.off(() => MainView(username: email,));
         return usr;
       } on FirebaseAuthException catch (e) {
         if (e.code == 'user-not-found') {
@@ -232,7 +245,9 @@ class AuthService {
         final credential = await FirebaseAuth.instance
             .signInWithEmailAndPassword(email: email, password: password);
         String username = await getUsername(email);
-        usr = await AuthService.saveUser(email);
+        usr = await AuthService.saveUser(sanitizeEmail(email));
+        Get.off(() => MainView(username: username,));
+
         return usr;
       } on FirebaseAuthException catch (e) {
         if (e.code == 'user-not-found') {
@@ -244,6 +259,8 @@ class AuthService {
     }
     return UserModel();
   }
+
+
 
   static void forgotPassword() {
     final TextEditingController emailController = TextEditingController();
