@@ -1,9 +1,10 @@
 import 'package:communityapp/models/user_model.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import 'package:get_storage/get_storage.dart';
 import '../widgets/custom_widgets.dart';
 
 FirebaseDatabase database = FirebaseDatabase.instance;
@@ -59,12 +60,15 @@ class AuthService {
 
   static updateInfo(String username, String github, String avatar,
       String linkedin, String name) async {
+    final db = FirebaseFirestore.instance.collection("users");
     Map<String, dynamic> userObject = {
       'name': name,
       'avatarlink': avatar,
       'github': github,
       'linkedin': linkedin,
+      'joinedGroups': {"-OESi5kZTsOfRXoZHNRV": 0, "-OEToTo5IIB0pk8z4sSn": 0}
     };
+    db.doc(username).set(userObject);
     databaseReference.child(username).update(userObject);
   }
    
@@ -199,10 +203,12 @@ class AuthService {
   }
 
   static Future<UserModel> saveUser(String username) async {
-    final event = await databaseReference.child(username).once();
-    final snapshot = event.snapshot;
-    if (snapshot.exists) {
-      Map<dynamic, dynamic> usersMap = snapshot.value as Map<dynamic, dynamic>;
+    final db = FirebaseFirestore.instance.collection("users").doc(username);
+    final doc = await db.get();
+    final box = GetStorage();
+    box.write('username', username);
+    if (doc.exists) {
+      Map<String, dynamic> usersMap = doc.data() as Map<String, dynamic>;
       UserModel usr = UserModel.fromJson(usersMap, username);
       return usr;
     }
