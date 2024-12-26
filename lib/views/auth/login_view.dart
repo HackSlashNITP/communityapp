@@ -1,10 +1,8 @@
 import 'package:communityapp/controllers/auth_controller.dart';
-import 'package:communityapp/models/user_model.dart';
 import 'package:communityapp/services/auth_service.dart';
-
-import 'package:communityapp/views/auth/register_view.dart';
 import 'package:communityapp/views/auth/signup_view.dart';
-import 'package:communityapp/views/home/home_view.dart';
+import 'package:communityapp/widgets/custom_widgets.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -128,8 +126,13 @@ class _StateSigninView extends State<LoginView> {
                               const SnackBar(
                                   content: Text("Please input your password")));
                         } else {
-                          UserModel usr = await AuthService.Login(
+                          final types.User usr = await AuthService.login(
                               _emailcontroller.text, _passwordcontroller.text);
+                          if (usr.id != "NotAvailable") {
+                            Get.off(() => MainView(
+                                  username: usr.firstName.toString(),
+                                ));
+                          }
                         }
                       },
                       style: ButtonStyle(
@@ -138,7 +141,6 @@ class _StateSigninView extends State<LoginView> {
                                 255, 65, 189, 115)), // Set the background color
                       ),
                       child: const Text(
-
                         'Login', // Change the text to "Sign In"
                         style: TextStyle(
                           color: Colors.white, // Set text color to white
@@ -169,11 +171,7 @@ class _StateSigninView extends State<LoginView> {
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const SignupView()));
+                                Get.to(() => const SignupView());
                               },
                           ),
                         ],

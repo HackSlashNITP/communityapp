@@ -25,5 +25,5 @@ class AuthController extends GetxController {
     }
   }
 
-  RxString imageUrl = "".obs as RxString;
+  RxString imageUrl = "".obs;
 }

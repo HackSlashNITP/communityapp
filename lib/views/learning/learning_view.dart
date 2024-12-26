@@ -13,7 +13,6 @@ class _LearningPageState extends State<LearningPage> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
     double textScaleFactor = screenWidth * 0.0025;
 
     return Scaffold(

@@ -3,6 +3,7 @@ import 'package:cloudinary_api/uploader/cloudinary_uploader.dart';
 import 'package:cloudinary_url_gen/cloudinary.dart';
 import 'package:communityapp/controllers/auth_controller.dart';
 import 'package:communityapp/services/auth_service.dart';
+import 'package:communityapp/utils/logging.dart';
 import 'package:communityapp/views/auth/login_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -24,18 +25,17 @@ class _StateRegisterView extends State<RegisterView> {
   final TextEditingController _namecontroller = TextEditingController();
   final TextEditingController _linkedIncontroller = TextEditingController();
   final TextEditingController _githubcontroller = TextEditingController();
-
+  final log = Logging.log;
   bool available = true;
   bool hidepassword = true;
 
   File? _imageFile;
-  String? _imageUrl;
   Future<void> _pickImage(ImageSource source) async {
     final ImagePicker picker = ImagePicker();
     final XFile? pickedFile = await picker.pickImage(source: source);
 
     if (pickedFile != null) {
-      print("Image picked");
+      log.d("Image picked");
       _imageFile = File(pickedFile.path);
       if (_imageFile != null) {
         var cloudinary = Cloudinary.fromStringUrl(
@@ -166,7 +166,7 @@ class _StateRegisterView extends State<RegisterView> {
                           AuthService.updateInfo(
                               widget.username,
                               _githubcontroller.text,
-                             controller.imageUrl.value.isEmpty
+                              controller.imageUrl.value.isEmpty
                                   ? "https://res.cloudinary.com/daj7vxuyb/image/upload/v1731866387/samples/balloons.jpg"
                                   : controller.imageUrl.value,
                               _linkedIncontroller.text,
