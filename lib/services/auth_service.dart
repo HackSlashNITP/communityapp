@@ -1,17 +1,21 @@
 import 'package:communityapp/models/user_model.dart';
+import 'package:communityapp/utils/logging.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import '../widgets/custom_widgets.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 FirebaseDatabase database = FirebaseDatabase.instance;
 DatabaseReference databaseReference = FirebaseDatabase.instance.ref('users');
+final log = Logging.log;
 
 class AuthService {
   List usernamewithemail = [];
+
   static Future<bool> signIn(
       String username, String emailAddress, String password) async {
     try {
@@ -21,12 +25,12 @@ class AuthService {
 
       // Check if the username or email already exists
       if (existingUsers.contains(username)) {
-        print('Username already exists.');
+        log.d('Username already exists.');
         return false; // Abort transaction
       }
 
       if (existingEmails.contains(emailAddress)) {
-        print('Email already in use.');
+        log.d('Email already in use.');
         return false; // Abort transaction
       }
 
@@ -45,15 +49,15 @@ class AuthService {
       // Add the user object to the database under the username
       await databaseReference.child(username).set(userObject);
       await credential.user!.sendEmailVerification();
-      print('User  created successfully: $username');
+      log.d('User created successfully: $username');
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
+        Get.snackbar('Error', 'The password provided is too weak.');
       } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
+        Get.snackbar('Error', 'The account already exists for that email.');
       }
     } catch (e) {
-      print(e);
+      log.e(e.toString());
     }
     return true;
   }
@@ -71,30 +75,24 @@ class AuthService {
     db.doc(username).set(userObject);
     databaseReference.child(username).update(userObject);
   }
-   
+
   static Future<bool> validateInputs(String username, String email,
       String password, BuildContext context) async {
     List users = await getUsersList();
     List emails = await getEmailsList();
 
     if (users.contains(username) || username.isEmpty) {
-      SnackBar snackBar =
-          const SnackBar(content: Text("Username Not Available or Null"));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      Get.snackbar('Error', 'Username Not Available or Null');
       return false;
     } else if (emails.contains(email)) {
-      SnackBar snackBar = const SnackBar(content: Text("Email Already Used"));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      Get.snackbar('Error', 'Email Already Used');
       return false;
     } else if (!RegExp(r'^[a-zA-Z0-9._%+-]+@gmail\.com$').hasMatch(email) ||
         email.isEmpty) {
-      SnackBar snackBar =
-          const SnackBar(content: Text("enter a valid email address"));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      Get.snackbar('Error', 'Enter a valid email address');
       return false;
     } else if (password.isEmpty || password.length < 6) {
-      SnackBar snackBar = const SnackBar(content: Text("Weak Password"));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      Get.snackbar('Error', 'Weak Password');
       return false;
     }
 
@@ -115,10 +113,10 @@ class AuthService {
           usersList.add(key); // Collect usernames
         });
       } else {
-        print('No users found.');
+        log.d("No user found");
       }
     } catch (error) {
-      print('Error retrieving users: $error');
+      log.e('Error retrieving users: $error');
     }
 
     return usersList;
@@ -131,7 +129,7 @@ class AuthService {
 
       if (snapshot.exists) {
         Map<dynamic, dynamic> usersMap =
-        snapshot.value as Map<dynamic, dynamic>;
+            snapshot.value as Map<dynamic, dynamic>;
 
         // Iterate through usersMap
         for (var entry in usersMap.entries) {
@@ -140,16 +138,15 @@ class AuthService {
           }
         }
       } else {
-        print('No users found.');
+        log.d("No user found.");
       }
     } catch (error) {
-      print('Error retrieving users: $error');
+      log.e("Error retriving users :${error.toString()}");
     }
 
     // Return "Not found" if the email is not matched
     return "Not found";
   }
-
 
   static Future<List<String>> getEmailsList() async {
     List<String> emailsList = [];
@@ -167,10 +164,10 @@ class AuthService {
           }
         });
       } else {
-        print('No users found.');
+        log.d("No user found");
       }
     } catch (error) {
-      print('Error retrieving emails: $error');
+      log.e("Error retriving email ${error.toString()}");
     }
 
     return emailsList;
@@ -185,65 +182,60 @@ class AuthService {
       if (snapshot.exists) {
         Map<dynamic, dynamic> usersMap =
             snapshot.value as Map<dynamic, dynamic>;
-        print(usersMap);
         usersMap.forEach((key, value) {
-          print(key);
           if (key == email && value['email'] != null) {
             emailaddress = value['email'];
           }
         });
       } else {
-        print('No users found.');
+        log.d("No user found");
       }
     } catch (error) {
-      print('Error retrieving emails: $error');
+      log.e("Error retriving email ${error.toString()}");
     }
 
     return emailaddress;
   }
 
-  static Future<UserModel> saveUser(String username) async {
+  static Future<types.User> saveUser(String username, String id) async {
     final db = FirebaseFirestore.instance.collection("users").doc(username);
     final doc = await db.get();
-    final box = GetStorage();
-    box.write('username', username);
+
     if (doc.exists) {
       Map<String, dynamic> usersMap = doc.data() as Map<String, dynamic>;
-      UserModel usr = UserModel.fromJson(usersMap, username);
-      return usr;
+      final imageUrl = usersMap['avatarLink'].toString();
+
+      final user = types.User(id: id, imageUrl: imageUrl, firstName: username);
+      final box = await Hive.openBox('userBox');
+      await box.put("user", HiveUser.fromChatUser(user));
+      return user;
     }
-    return UserModel();
+    return types.User(id: "NotAvailable", firstName: "NotAvailable");
   }
 
-
-  static Future<UserModel> Login(String email, String password) async {
-    UserModel usr;
-
-
-    String sanitizeEmail(String email) {
-      return email.replaceAll('.', ','); // Replace '.' with ','
-    }
+  static Future<types.User> login(String email, String password) async {
+    types.User usr;
 
     if (!RegExp(r'^[a-zA-Z0-9._%+-]+@gmail\.com$').hasMatch(email)) {
-      print("I am in username finder code");
       String emailAddress = await getEmailsthroughUsername(email);
-      print(emailAddress);
       try {
         final credential = await FirebaseAuth.instance
             .signInWithEmailAndPassword(
-            email: emailAddress, password: password);
+                email: emailAddress, password: password);
+        final id = credential.user!.uid;
+        usr = await AuthService.saveUser(email, id);
 
-
-        usr = await AuthService.saveUser(sanitizeEmail(emailAddress));
-
-
-        Get.off(() => MainView(username: email,));
+        Get.off(() => MainView(
+              username: email,
+            ));
         return usr;
       } on FirebaseAuthException catch (e) {
         if (e.code == 'user-not-found') {
-          print('No user found for that email.');
+          Get.snackbar('Error', 'No user found for that email.');
+          log.e('No user found for that email.');
         } else if (e.code == 'wrong-password') {
-          print('Wrong password provided for that user.');
+          Get.snackbar("Error", "Wrong password provided for that user.");
+          log.e('Wrong password provided for that user.');
         }
       }
     } else {
@@ -251,22 +243,30 @@ class AuthService {
         final credential = await FirebaseAuth.instance
             .signInWithEmailAndPassword(email: email, password: password);
         String username = await getUsername(email);
-        usr = await AuthService.saveUser(sanitizeEmail(email));
-        Get.off(() => MainView(username: username,));
+        if (username == "Not Found") {
+          Get.snackbar(
+              "Wrong credentials", "User don't exist for given username");
+        } else {
+          final id = credential.user!.uid;
+          usr = await AuthService.saveUser(username, id);
+          Get.off(() => MainView(
+                username: username,
+              ));
 
-        return usr;
+          return usr;
+        }
       } on FirebaseAuthException catch (e) {
         if (e.code == 'user-not-found') {
-          print('No user found for that email.');
+          Get.snackbar('Error', 'No user found for that email.');
+          log.e('No user found for that email.');
         } else if (e.code == 'wrong-password') {
-          print('Wrong password provided for that user.');
+          Get.snackbar("Error", "Wrong password provided for that user.");
+          log.e('Wrong password provided for that user.');
         }
       }
     }
-    return UserModel();
+    return types.User(id: "NotAvailable");
   }
-
-
 
   static void forgotPassword() {
     final TextEditingController emailController = TextEditingController();

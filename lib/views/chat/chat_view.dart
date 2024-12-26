@@ -1,131 +1,97 @@
+import 'package:communityapp/controllers/chatview_controller.dart';
+import 'package:communityapp/models/user_model.dart';
+import 'package:communityapp/views/chat/chat_page.dart';
+import 'package:communityapp/widgets/animatedbuttonbar.dart';
+import 'package:communityapp/widgets/groupbox.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'chat_room.dart';
-import 'package:communityapp/res/colors.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
-class chat_view extends StatelessWidget {
-
+class ChatView extends StatefulWidget {
   final String username;
-  chat_view({
-    required this.username,
-});
-  void _showGroupDialog(BuildContext context, String channelId, String userName) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Select a Group'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  Get.to(() => ChatScreen(
-                    userName: username,
-                    channelId: channelId,
-                    group1: '1st year',
-                  ));
-                },
-                child: Text('1st Year'),
-              ),
-              SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  Get.to(() => ChatScreen(
-                    userName: username,
-                    channelId: channelId,
-                    group1: '2nd year',
-                  ));
-                },
-                child: Text('2nd Year'),
-              ),
-              SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  Get.to(() => ChatScreen(
-                    userName: username,
-                    channelId: channelId,
-                    group1: '3rd year',
-                  ));
-                },
-                child: Text('3rd Year'),
-              ),
-            ],
-          ),
-        );
-      },
-    );
+
+  const ChatView({super.key, required this.username});
+
+  @override
+  ChatViewState createState() => ChatViewState();
+}
+
+class ChatViewState extends State<ChatView> {
+  late final ChatviewController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = Get.put(ChatviewController(username: widget.username));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Center(child: Text('Welcome to HackSlash')),
+        backgroundColor: Colors.transparent,
+        title: const Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.groups_2_rounded, size: 35),
+            SizedBox(width: 20),
+            Text(
+              "Community",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 30),
+            ),
+          ],
+        ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-
-              SizedBox(height: 20),
-              Text(
-                'Select Your Team',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 10),
-              ...[
-                {'name': 'Team Nougat', 'id': 'flutter'},
-                {'name': 'Team 405 Found', 'id': 'web'},
-                {'name': 'Team SIGSTP', 'id': 'DSA'},
-                {'name': 'Team CipherSync', 'id': 'Blockchain'},
-                {'name': 'Team Pixel Byte', 'id': 'UI/UX'},
-                {'name': 'Team GrayInterface', 'id': 'ML'},
-                {'name': 'Team PR & Event', 'id': 'PR & Event'},
-                {'name': 'Team Content & Social Media', 'id': 'Content & Social Media'},
-                {'name': 'Office Bearers', 'id': 'Office Bearers'},
-                {'name': 'Queries', 'id': 'Queries'},
-              ].map((team) {
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 10.0),
-                  child: ElevatedButton(
-                    onPressed: () {
-
-                        if (team['id'] == 'Office Bearers'|| team['id'] == 'Queries') {
-                          Get.to(() => ChatScreen(
-                            userName: username,
-                            channelId: team['id']!,
-                            group1: 'Main',
-                          ));
-                        } else {
-                          _showGroupDialog(context, team['id']!, username);
-                        }
-
+      body: Container(
+        alignment: Alignment.center,
+        padding: EdgeInsets.all(20),
+        height: MediaQuery.of(context).size.height,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AnimatedButtonBar(username: widget.username),
+            const SizedBox(height: 40),
+            Obx(() => Expanded(
+                  // Wrap the ListView.builder with Expanded
+                  child: ListView.builder(
+                    itemCount: controller.groups.length,
+                    itemBuilder: (context, index) {
+                      final group = controller.groups[index];
+                      return Column(
+                        children: [
+                          Center(
+                            child: GestureDetector(
+                              onTap: () async {
+                                final box = await Hive.openBox("userBox");
+                                final user = box.get("user") as HiveUser;
+                                final username = user.firstname;
+                                log.d("User is $username");
+                                Get.to(() => ChatPage(
+                                    username: username,
+                                    channelId: controller.groups[index].id
+                                        .toString(),
+                                    channelName: controller.groups[index].name
+                                        .toString(),
+                                    user: user.toChatUser()));
+                              },
+                              child: GroupBox(
+                                avatar: group.avatar.toString(),
+                                channelName: group.name.toString(),
+                                unreads: group.unreads!.toInt(),
+                                lastMessage:
+                                    group.lastmessage!.message.toString(),
+                                sender: group.lastmessage!.sender.toString(),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                        ],
+                      );
                     },
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 30,
-                          backgroundImage: AssetImage('assets/images/hackshashlogo.jpg'),
-                          backgroundColor: ColorPalette.navyBlack,
-                        ),
-                        SizedBox(width: 10),
-                        Text(
-                          team['name']!,
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
                   ),
-                );
-              }).toList(),
-            ],
-          ),
+                )),
+          ],
         ),
       ),
     );

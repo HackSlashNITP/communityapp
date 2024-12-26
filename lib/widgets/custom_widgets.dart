@@ -1,16 +1,15 @@
-import 'package:communityapp/views/chat/chat_room.dart';
+import 'package:communityapp/views/chat/chat_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:communityapp/views/home/home_view.dart';
 import 'package:communityapp/controllers/home_controller.dart';
-import 'package:communityapp/views/chat/chat_view.dart';
 import 'package:communityapp/views/learning/learning_view.dart';
 import 'package:communityapp/views/profile/profile_view.dart';
 
 class MainView extends StatelessWidget {
   final String username;
   final BottomNavController bottomNavController = Get.put(BottomNavController());
-  MainView({
+  MainView({super.key, 
     required this.username,
 });
 
@@ -18,7 +17,7 @@ class MainView extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<Widget> screens = [
       HomeView(),
-      chat_view(username: username),
+      ChatView(username: username), //switch with chat page
       LearningPage(),
       ProfileView(),
     ];

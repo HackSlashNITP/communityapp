@@ -82,33 +82,31 @@ class _StateSignupView extends State<SignupView> {
                     const SizedBox(
                       height: 15,
                     ),
-                    Obx(
-                      () => Column(
-                        children: [
-                          TextField(
-                        controller: _usernamecontroller,
-                        decoration: const InputDecoration(
-                            hintText: 'Username',
-                            icon: Icon(Icons.person_2_outlined,
-                                color: Color.fromARGB(255, 65, 189, 115))),
-                        onChanged: (value) async {
-                          if (value.isNotEmpty) {
-                            controller.checkUsernameAvailibility(value);
-                          }
-                        },
-                      ),
-              
-                     controller.unameAvailiblitiy.value
-                          ? Container() // Display nothing if available
-                          : Text(
-                              "${_usernamecontroller.text} is not available",
-                              style: const TextStyle(
-                                  fontSize: 10, color: Colors.red),
-                              textAlign: TextAlign.right,
+                    Obx(() => Column(
+                          children: [
+                            TextField(
+                              controller: _usernamecontroller,
+                              decoration: const InputDecoration(
+                                  hintText: 'Username',
+                                  icon: Icon(Icons.person_2_outlined,
+                                      color:
+                                          Color.fromARGB(255, 65, 189, 115))),
+                              onChanged: (value) async {
+                                if (value.isNotEmpty) {
+                                  controller.checkUsernameAvailibility(value);
+                                }
+                              },
                             ),
-                        ],
-                      )
-                    ),
+                            controller.unameAvailiblitiy.value
+                                ? Container() // Display nothing if available
+                                : Text(
+                                    "${_usernamecontroller.text} is not available",
+                                    style: const TextStyle(
+                                        fontSize: 10, color: Colors.red),
+                                    textAlign: TextAlign.right,
+                                  ),
+                          ],
+                        )),
                     const SizedBox(
                       height: 10,
                     ),
@@ -122,7 +120,8 @@ class _StateSignupView extends State<SignupView> {
                     const SizedBox(
                       height: 10,
                     ),
-                  Obx(()=>   TextField(
+                    Obx(
+                      () => TextField(
                         controller: _passwordcontroller,
                         obscureText: controller.signupHidePass.value,
                         decoration: InputDecoration(
@@ -140,8 +139,8 @@ class _StateSignupView extends State<SignupView> {
                             ),
                             icon: Icon(Icons.key,
                                 color: Color.fromARGB(255, 65, 189, 115))),
-                      ),),
-                    
+                      ),
+                    ),
                     const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () async {
@@ -157,11 +156,8 @@ class _StateSignupView extends State<SignupView> {
                             _passwordcontroller.text,
                           );
                           if (success) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => RegisterView(
-                                        username: _usernamecontroller.text)));
+                            Get.off(RegisterView(
+                                username: _usernamecontroller.text));
                           }
                         }
                       },
