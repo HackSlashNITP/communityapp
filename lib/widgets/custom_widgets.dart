@@ -19,7 +19,7 @@ class MainView extends StatelessWidget {
       HomeView(),
       ChatView(username: username), //switch with chat page
       LearningPage(),
-      ProfileView(),
+      ProfileView(username: username),
     ];
     return Scaffold(
       body: Obx(() => screens[bottomNavController.selectedIndex.value]),
