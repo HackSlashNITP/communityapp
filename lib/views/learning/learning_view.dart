@@ -1,6 +1,5 @@
-import '../../res/colors.dart';
-import '../../widgets/learning_card.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class LearningPage extends StatefulWidget {
   const LearningPage({super.key});
@@ -10,102 +9,189 @@ class LearningPage extends StatefulWidget {
 }
 
 class _LearningPageState extends State<LearningPage> {
+
+  double height=Get.height;
+  double width=Get.width;
+
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double textScaleFactor = screenWidth * 0.0025;
-
     return Scaffold(
+
       appBar: AppBar(
-        toolbarHeight: 40,
         title: Row(
           children: [
-            SizedBox(width: screenWidth * 0.15),
-            SizedBox(
-              height: 23,
-              width: 23,
-              child: Image.asset('assets/images/Booo.png'),
+            IconButton(
+              icon: Icon(Icons.menu,color: Colors.white,),
+              onPressed: () {
+                // Handle menu action
+              },
             ),
-            SizedBox(width: screenWidth * 0.03),
-            Text('Learning', style: TextStyle(fontSize: 24 * textScaleFactor)),
+            SizedBox(width: 8), // Space between icon and text
+            Text('Hackslash',style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),),
           ],
         ),
-        leading: IconButton(onPressed: () {}, icon: Icon(Icons.menu)),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.fromLTRB(screenWidth * 0.8, 10, 10, 5),
-              child: Image.asset('assets/images/imag.png'),
-            ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(screenWidth * 0.1, 20, 0, 0),
-              child: Text(
-                'Hello Rahul,',
-                style: TextStyle(
-                  fontSize: 22 * textScaleFactor,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-            Padding(
-              padding: EdgeInsets.fromLTRB(screenWidth * 0.07, 0, 0, 0),
-              child: Text(
-                'Continue\nLearning!',
-                style: TextStyle(
-                  fontSize: 43 * textScaleFactor,
-                  height: 1,
-                ),
-              ),
-            ),
-            const SizedBox(height: 28),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        backgroundColor: Color(0xFF223345), // Set your desired background color
+        actions: [
+          Switch(
+            value: false, // This can be controlled with a state variable
+            onChanged: (value) {
+              // Handle toggle action
+            },),],),
+      body:
+
+      Container(
+        color: Color(0xFF223345),
+        child:
+        Container(
+          decoration: BoxDecoration(
+            color:Colors.white,
+            borderRadius: BorderRadius.only(topLeft: Radius.circular(30),topRight: Radius.circular(30)),
+
+
+          ),
+          height: height*1,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+
               children: [
-                Padding(
-                  padding: EdgeInsets.only(left: screenWidth * 0.08),
-                  child: Text(
-                    'Your Lessons',
-                    style: TextStyle(
-                      fontSize: 22 * textScaleFactor,
-                      fontWeight: FontWeight.w600,
+
+                Row(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: const [
+                        Text(
+                          'Hello Tanay',
+                          style: TextStyle(
+                            fontSize: 50,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          "Let's Continue",
+                          style: TextStyle(
+                            fontSize: 25,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        Text(
+                          " Learning!",
+                          style: TextStyle(
+                            fontSize: 25,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(width: 16),
+                    const CircleAvatar(
+                      radius: 50,
+                      //backgroundImage: , // Replace with your image
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 50),
+                const Text(
+                  'Your Lessons',
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Divider(
+                  thickness: 2,
+                  color: Colors.blueGrey,
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  decoration: InputDecoration(
+                    hintText: 'AI Search ?',
+                    prefixIcon: const Icon(Icons.search),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                 ),
-                SizedBox(width: screenWidth * 0.25),
-                InkWell(
-                  child: Image.asset('assets/images/Four.png'),
-                  onTap: () {},
+                const SizedBox(height: 16),
+                Expanded(
+                  child: GridView.count(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
+                    children: [
+                      _buildGridItem('Road Map', Icons.map, Colors.green),
+                      _buildGridItem('Playlist', Icons.playlist_play, Colors.blue),
+                      _buildGridItem('Projects', Icons.lightbulb, Colors.orange),
+                      _buildGridItem('PDF Notes', Icons.picture_as_pdf, Colors.red),
+                    ],
+
+
+                  ),
                 ),
-                InkWell(
-                  child: Image.asset('assets/images/red.png'),
-                  onTap: () {},
-                ),
+
               ],
+
             ),
-            Container(
-              height: 2.5,
-              color: ColorPalette.brightEmeraldGreen,
-            ),
-            Row(
-              children: [
-                LearningCard(imagePath: "assets/images/420.png", cardName: "Personalized\nLearning", onTap: (){}),
-                LearningCard(imagePath: "assets/images/jiji.png", cardName: "Playlist", onTap: (){}),
-              ],
-            ),
-            Row(
-              children: [
-                LearningCard(imagePath: "assets/images/popo.png", cardName: "Projects", onTap: (){}),
-                LearningCard(imagePath: "assets/images/imag00.png", cardName: "Pdf Notes", onTap: (){}),
-              ],
-            ),
-          ],
+          ),
         ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: Colors.teal,
+        unselectedItemColor: Colors.grey,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.chat),
+            label: 'Chat',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.book),
+            label: 'Learning',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
       ),
     );
   }
 }
+Widget _buildGridItem(String title, IconData icon, Color color) {
+  return Container(
+    decoration: BoxDecoration(
+      color: Colors.grey.shade200,
+      borderRadius: BorderRadius.circular(12),
+    ),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(
+          icon,
+          size: 48,
+          color: color,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+
+      ],
+    ),
+  );
+}
+
+
