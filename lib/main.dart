@@ -12,6 +12,7 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const GetMaterialApp(
     debugShowCheckedModeBanner: false,
+    //start
     home: MyApp(),
   ));
 }
