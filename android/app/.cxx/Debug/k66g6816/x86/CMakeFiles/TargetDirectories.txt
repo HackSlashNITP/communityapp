@@ -1,0 +1,2 @@
+C:/Users/Nakul/OneDrive/Desktop/aluminiConnect/CommunityApp/android/app/.cxx/Debug/k66g6816/x86/CMakeFiles/edit_cache.dir
+C:/Users/Nakul/OneDrive/Desktop/aluminiConnect/CommunityApp/android/app/.cxx/Debug/k66g6816/x86/CMakeFiles/rebuild_cache.dir
