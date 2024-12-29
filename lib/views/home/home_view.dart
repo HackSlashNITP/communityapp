@@ -57,19 +57,69 @@ class _HomeViewState extends State<HomeView> {
     final List<EventOption> events = [
       EventOption(
         title: 'Anvikshiki',
-        image: 'assets/meme.png',
+        image: 'assets/images/hackslash1.png',
         venue: 'Venue: TBA',
         time: 'Time: TBA',
         route: '/anvikshiki',
       ),
       EventOption(
         title: 'Hacktober Fest\nInfo Session',
-        image: 'assets/meme01.jpg',
+        image: 'assets/images/hackslash2.png',
+        venue: 'Venue: TBA',
+        time: 'Time: TBA',
+        route: '/hacktober',
+      ),
+      EventOption(
+        title: 'SIH Internal \n Hackathon',
+        image: 'assets/images/hackslash3.png',
+        venue: 'Venue: TBA',
+        time: 'Time: TBA',
+        route: '/hacktober',
+      ),
+      EventOption(
+        title: 'Byteverse \nInfo Session',
+        image: 'assets/images/hackslash4.png',
+        venue: 'Venue: TBA',
+        time: 'Time: TBA',
+        route: '/hacktober',
+      ),
+      EventOption(
+        title: 'Byteverse \n Hackathon',
+        image: 'assets/images/hackslash4.png',
         venue: 'Venue: TBA',
         time: 'Time: TBA',
         route: '/hacktober',
       ),
       // Add more events as needed
+    ];
+    final List<Courses> recentCourses = [
+      Courses(title: "User Interface Design for Beginners in Figma",
+          subtitle:"This roadmap is designed for anyone interested in learning the fundamentals of UI design, with no prior experience required. It covers essential",
+          image: "assets/images/course1.png"),
+      Courses(title: "Mobile App Development with Flutter",
+          subtitle:"This roadmap is designed for anyone interested in learning the fundamentals of app development, with no prior experience required.",
+          image: "assets/images/course1.png"),
+      Courses(title: "Mobile App Development with Flutter",
+          subtitle:"This roadmap is designed for anyone interested in learning the fundamentals of app development, with no prior experience required.",
+          image: "assets/images/course1.png"),
+
+      Courses(title: "Mobile App Development with Flutter",
+          subtitle:"This roadmap is designed for anyone interested in learning the fundamentals of app development, with no prior experience required.",
+          image: "assets/images/course1.png"),
+
+      Courses(title: "Mobile App Development with Flutter",
+          subtitle:"This roadmap is designed for anyone interested in learning the fundamentals of app development, with no prior experience required.",
+          image: "assets/images/course1.png"),
+
+      Courses(title: "Mobile App Development with Flutter",
+          subtitle:"This roadmap is designed for anyone interested in learning the fundamentals of app development, with no prior experience required.",
+          image: "assets/images/course1.png"),
+
+      Courses(title: "Mobile App Development with Flutter",
+          subtitle:"This roadmap is designed for anyone interested in learning the fundamentals of app development, with no prior experience required.",
+          image: "assets/images/course1.png"),
+
+
     ];
     final width = MediaQuery.of(context).size.width;
     final isLandscape =
@@ -81,144 +131,159 @@ class _HomeViewState extends State<HomeView> {
         return SingleChildScrollView(
           child:
           Container(
-            color: ColorPalette.darkSlateBlue,
-            child:Column(
+            color: ColorPalette.pureWhite,
+            child: Column(
               children: [
-                _textField(),
-        
-                SizedBox(height: height*0.02,),
-        
                 Container(
-                    width: width,
-                    height: height*0.3,
-                    decoration: BoxDecoration(
-                      color:ColorPalette.pureWhite,
-                      borderRadius: BorderRadius.only(topLeft: Radius.circular(30),topRight: Radius.circular(30)),
-        
-        
-                    ),
-                    child: Column(
-                      children: [
-                        // carousel slider
-                        _curoselview(),
-                        // dot indicator
-                        Obx(()=> DotsIndicator(position:controller.CarouselController.value,dotsCount: 4,decorator: DotsDecorator(
-                          color: Colors.grey,
-                          activeColor: ColorPalette.black,
-        
-                        ),)),
-                        // explore community starts from here in this column itself
-                        Padding(
-                          padding: EdgeInsets.only(
-                              top: 32.0, left: 16.0, right: 16.0, bottom: 16.0),
-                          child: Row(
+                  color: ColorPalette.darkSlateBlue,
+                  child:Column(
+                    children: [
+                      _textField(),
+
+                      SizedBox(height: height*0.02,),
+
+                      Container(
+                          width: width,
+                          height: height*0.28,
+                          decoration: BoxDecoration(
+                            color:ColorPalette.pureWhite,
+                            borderRadius: BorderRadius.only(topLeft: Radius.circular(30),topRight: Radius.circular(30)),
+
+                          ),
+                          child: Column(
                             children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 8),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFF223345),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: const Text(
-                                  'Explore Community',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
-                                ),
+                              // carousel slider
+                              _curoselview(),
+                              // dot indicator
+                              Obx(()=> DotsIndicator(position:controller.CarouselController.value,dotsCount: 4,decorator: DotsDecorator(
+                                color: Colors.grey,
+                                activeColor: ColorPalette.black,
+
                               ),
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 8.0),
-                                  child: Divider(
-                                    color: Colors.black54,
-                                    thickness: 1,
-                                  ),
-                                ),
+                              )
                               ),
+
                             ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: isLandscape ? constraints.maxHeight * 0.6 : 160,
-                          child: ScrollConfiguration(
-                            behavior: const ScrollBehavior().copyWith(
-                              physics: const BouncingScrollPhysics(),
-                            ),
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: options.length,
-                              itemBuilder: (context, index) {
-                                return CommunityCard(option: options[index]);
-                              },
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 20), // Spacing between sections
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              top: 32.0, left: 16.0, right: 16.0, bottom: 16.0),
-                          child: Row(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 8),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFF223345),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: const Text(
-                                  'Upcoming Events',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 8.0),
-                                  child: Divider(
-                                    color: Colors.black54,
-                                    thickness: 1,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: isLandscape ? constraints.maxHeight * 0.7 : 280,
-                          child: ScrollConfiguration(
-                            behavior: const ScrollBehavior().copyWith(
-                              physics: const BouncingScrollPhysics(),
-                            ),
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: events.length,
-                              itemBuilder: (context, index) {
-                                return EventCard(event: events[index]);
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
-                    )
-        
+                          )
+
+                      ),
+
+                    ],
+                  ),
+
                 ),
-        
-        
-        
-        
+
+                _topHead("Explore Community"),
+                SizedBox(
+                  height: isLandscape ? constraints.maxHeight * 0.6 : 160,
+                  child: ScrollConfiguration(
+                    behavior: const ScrollBehavior().copyWith(
+                      physics: const BouncingScrollPhysics(),
+                    ),
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: options.length,
+                      itemBuilder: (context, index) {
+                        return CommunityCard(option: options[index]);
+                      },
+                    ),
+                  ),
+                ),
+                SizedBox(height: 2), // Spacing between sections
+                _topHead("Upcoming Events"),
+                SizedBox(
+                  height: height*0.32,
+                  child: ScrollConfiguration(
+                    behavior: const ScrollBehavior().copyWith(
+                      physics: const BouncingScrollPhysics(),
+                    ),
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: events.length,
+                      itemBuilder: (context, index) {
+                        return EventCard(event: events[index]);
+                      },
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 2), // Spacing between sections
+               _topHead("Recent Courses"),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 0,horizontal: 16),
+                  child: ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
+                    itemCount: recentCourses.length,
+                    itemBuilder: (context, index) {
+                      return _recentCourses(recentCourses[index].title, recentCourses[index].subtitle, recentCourses[index].image);
+                    },
+                  ),
+                ),
+
+
+
+
               ],
             ),
-        
           ),
         );
           }
+      ),
+    );
+  }
+  Widget _topHead(String title){
+    return  Padding(
+      padding: const EdgeInsets.only(
+          top: 32.0, left: 16.0, right: 16.0, bottom: 16.0),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(
+                horizontal: 16, vertical: 8),
+            decoration: BoxDecoration(
+              color: const Color(0xFF223345),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(
+              title,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Divider(
+              color: Colors.black54,
+              thickness: 1,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+  Widget _recentCourses(String title, String subtitle, String image){
+    return SizedBox(
+      width: width*0.9,
+      height: height*0.11,
+      child: Row(
+        children: [
+          Image(image: Image.asset(image).image,height: height*0.13,width: width*0.3,),
+          SizedBox(width: 5,),
+          Expanded(
+            child: SizedBox(
+              child: Column(
+                children: [
+                  Text(title,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16,overflow: TextOverflow.ellipsis),maxLines: 2,),
+                  Text(subtitle,style: TextStyle(fontSize: 8,overflow: TextOverflow.ellipsis),maxLines: 3,)
+                ],
+              ),
+            ),
+          )
+        ],
       ),
     );
   }
@@ -230,24 +295,23 @@ class _HomeViewState extends State<HomeView> {
         child: Container(
           padding: EdgeInsets.only(top: height*0.05,left: width*0.03,right: width*0.02),
           color: ColorPalette.darkSlateBlue,
-
           width: width*0.9,
           height: height*0.125,
           child: Row(
             children: [
               // menu option
-              Icon(Icons.menu,color: ColorPalette.pureWhite,size: height*0.052,),
-              SizedBox(width: width*0.055,),
+              Icon(Icons.menu,color: ColorPalette.pureWhite,size: height*0.05,),
+              SizedBox(width: width*0.05,),
               // hackslash logo and name
-              Image(image: Image.asset('assets/images/hackshashlogo.jpg').image),
+              Image(image: Image.asset('assets/images/hackshashlogo.jpg').image,height: height*0.05,width: width*0.1,),
               SizedBox(width: width*0.015,),
-              Text('Hackslash',style: TextStyle(color: ColorPalette.pureWhite,fontSize: 28,fontWeight: FontWeight.bold),),
-              SizedBox(width: width*0.12,),
+              Text('Hackslash',style: TextStyle(color: ColorPalette.pureWhite,fontSize: 24,fontWeight: FontWeight.bold),),
+              Spacer(),
               // switch for changing theme
               Obx(()=>
                   SizedBox(
-                    width: width*0.15,
-                    height: height*0.055,
+                    width: width*0.12,
+                    height: height*0.04,
                     child: FittedBox(
                       fit: BoxFit.fill,
                       child:
@@ -260,8 +324,6 @@ class _HomeViewState extends State<HomeView> {
 
                   ))
 
-
-
             ],
           ),
         )
@@ -272,7 +334,7 @@ class _HomeViewState extends State<HomeView> {
   // field for entering search values
   Widget _textField(){
     return Container(
-      height: height*0.1,
+      height: height*0.09,
       padding: EdgeInsets.symmetric(horizontal: width*0.035,vertical: height*0.02),
       child: TextFormField(
         decoration: InputDecoration(
@@ -285,14 +347,15 @@ class _HomeViewState extends State<HomeView> {
             fillColor: ColorPalette.pureWhite,
             filled: true,
 
-
             hintText: 'Search',
-            hintStyle: TextStyle(color: ColorPalette.darkSlateBlue,fontStyle: FontStyle.italic),
+            hintStyle: TextStyle(color: ColorPalette.darkSlateBlue,fontStyle: FontStyle.italic,),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
             )
         ),
         cursorColor: ColorPalette.navyBlack,
+        textAlignVertical: TextAlignVertical.center,
+
 
       ),
     );
@@ -305,19 +368,19 @@ class _HomeViewState extends State<HomeView> {
     return Column(
 
       children: [
-        SizedBox(height: height*0.07,),
+        SizedBox(height: height*0.04,),
         SizedBox(
           height: height*0.2,
-          width: width,
+          width: MediaQuery.sizeOf(context).width,
           child: CarouselSlider(
               options: CarouselOptions(
-
                 enlargeCenterPage: true,
                 padEnds: false,
-
                 enableInfiniteScroll:false ,
                 viewportFraction: 0.75 ,
                 onPageChanged: (index,_)=>controller.updatePgaeIndicator(index),
+                autoPlay: true,
+                pauseAutoPlayOnTouch: true
               ),
 
               items: [
@@ -613,4 +676,15 @@ class HacktoberScreen extends StatelessWidget {
       body: Center(child: Text('Hacktober Fest ')),
     );
   }
+}
+
+class Courses{
+  final String title;
+  final String subtitle;
+  final String image;
+  const Courses({
+    required this.title,
+    required this.subtitle,
+    required this.image
+});
 }
