@@ -7,10 +7,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-
-import 'services/auth_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,12 +29,25 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
       home: const MyHomePage(),
+      builder: (context, child) {
+        // Get the media query size
+        final mediaQueryData = MediaQuery.of(context);
+        final designSize =
+            mediaQueryData.size.width > mediaQueryData.size.height
+                ? const Size(955, 430)
+                : const Size(430, 955);
+
+        // Initialize ScreenUtil with the correct design size
+        ScreenUtil.init(
+          context,
+          designSize: designSize,
+          minTextAdapt: true,
+          splitScreenMode: true,
+        );
+
+        return child!;
+      },
     );
   }
 }
@@ -48,29 +60,18 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final TextEditingController conr = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(milliseconds: 100), () {
+    Future.delayed(const Duration(milliseconds: 300), () {
       if (_auth.currentUser == null) {
         Get.off(() => const LoginView());
       } else {
-        final box = Hive.openBox("userBox");
-        box.then((box) {
-          final user = box.get("user") as HiveUser;
-          final username = user.firstname;
-          log.d("User is $username");
-          Get.off(() => MainView(username: username));
-        });
+        Get.off(() => MainView(userid: _auth.currentUser!.uid));
       }
     });
-  }
-
-  void setText() {
-    conr.text = "String";
   }
 
   @override
@@ -79,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         child: Row(
           children: [
-            Image.asset("assets/images/hackshashlogo.jpg"),
+            Image.asset("assets/images/logo.jpg"),
             const SizedBox(width: 20),
             const Text(
               "Hackslash",

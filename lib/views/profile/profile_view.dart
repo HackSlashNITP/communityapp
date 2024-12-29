@@ -1,3 +1,4 @@
+import 'package:communityapp/utils/logging.dart';
 import 'package:communityapp/views/auth/login_view.dart';
 import 'package:communityapp/views/profile/account_settings_view.dart';
 import 'package:communityapp/views/profile/help_desk_view.dart';
@@ -11,7 +12,7 @@ import 'edit_profile_view.dart';
 class ProfileView extends StatefulWidget {
   final String username;
 
-  const ProfileView({Key? key, required this.username}) : super(key: key);
+  const ProfileView({super.key, required this.username});
 
   @override
   State<ProfileView> createState() => _StateProfileView();
@@ -38,12 +39,9 @@ class _StateProfileView extends State<ProfileView> {
   Future<void> _logout(BuildContext context) async {
     try {
       await FirebaseAuth.instance.signOut();
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const LoginView()),
-      );
+      Get.offAll(() => const LoginView());
     } catch (e) {
-      print("Error during logout: $e");
+      Logging.log.e("Error during logout: $e");
     }
   }
 

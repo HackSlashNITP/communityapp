@@ -1,201 +1,125 @@
-import 'package:communityapp/controllers/auth_controller.dart';
-import 'package:communityapp/services/auth_service.dart';
+import 'package:communityapp/controllers/login_controller.dart';
 import 'package:communityapp/views/auth/signup_view.dart';
-import 'package:communityapp/widgets/custom_widgets.dart';
-import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
-import 'package:flutter/gestures.dart';
+import 'package:communityapp/views/components/auth_components.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
 
   @override
-  State<LoginView> createState() => _StateSigninView();
+  State<LoginView> createState() => _StateLoginView();
 }
 
-class _StateSigninView extends State<LoginView> {
-  final controller = Get.put(AuthController());
-  final TextEditingController _emailcontroller = TextEditingController();
-  final TextEditingController _passwordcontroller = TextEditingController();
+class _StateLoginView extends State<LoginView> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final component = AuthComponents();
+  final controller = Get.put(LoginController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-          padding:
-              const EdgeInsets.only(left: 25, right: 25, top: 10, bottom: 10),
-          height: MediaQuery.sizeOf(context).height,
-          width: MediaQuery.sizeOf(context).width,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: const AssetImage(
-                "assets/images/loginpage.jpg",
-              ),
-              fit: BoxFit.fitHeight,
-              colorFilter: ColorFilter.mode(
-                Colors.black.withOpacity(0.5), // Black color with opacity
-                BlendMode.darken, // Blend mode to darken the image
-              ),
-            ),
-          ),
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 120,
-              ),
-              const Text(
-                "Welcome To",
-                style: TextStyle(fontSize: 18, color: Colors.white),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset("assets/images/hackshashlogo.jpg"),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  const Text(
-                    "Hackslash",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 40,
-                        color: Colors.white),
-                    textAlign: TextAlign.center,
-                  )
-                ],
-              ),
-              const SizedBox(
-                height: 80,
-              ),
-              Container(
-                alignment: Alignment.center,
-                height: 300,
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Column(
-                  children: [
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    TextField(
-                      controller: _emailcontroller,
-                      decoration: const InputDecoration(
-                          hintText: 'Email or username',
-                          icon: Icon(Icons.email_outlined,
-                              color: Color.fromARGB(255, 65, 189, 115))),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Obx(
-                      () => TextField(
-                        controller: _passwordcontroller,
-                        obscureText: controller.loginHidePass.value,
-                        decoration: InputDecoration(
-                            hintText: 'Password',
-                            suffixIcon: IconButton(
-                              onPressed: () {
-                                controller.toggleLoginPass();
-                              },
-                              icon: Icon(
-                                  controller.loginHidePass.value
-                                      ? Icons.remove_red_eye
-                                      : Icons.password_outlined,
-                                  color:
-                                      const Color.fromARGB(255, 174, 179, 176)),
-                            ),
-                            icon: Icon(Icons.key,
-                                color: Color.fromARGB(255, 65, 189, 115))),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () async {
-                        if (_emailcontroller.text.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text(
-                                      "Please input your email or username")));
-                        } else if (_passwordcontroller.text.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text("Please input your password")));
-                        } else {
-                          final types.User usr = await AuthService.login(
-                              _emailcontroller.text, _passwordcontroller.text);
-                          if (usr.id != "NotAvailable") {
-                            Get.off(() => MainView(
-                                  username: usr.firstName.toString(),
-                                ));
-                          }
-                        }
-                      },
-                      style: ButtonStyle(
-                        backgroundColor: WidgetStateProperty.all(
-                            const Color.fromARGB(
-                                255, 65, 189, 115)), // Set the background color
-                      ),
-                      child: const Text(
-                        'Login', // Change the text to "Sign In"
-                        style: TextStyle(
-                          color: Colors.white, // Set text color to white
-                          fontWeight: FontWeight.bold, // Make the font bold
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    RichText(
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: 'Don\'t have an account? ',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey[400], // Light gray color
-                            ),
-                          ),
-                          TextSpan(
-                            text: 'Sign Up',
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: Color.fromARGB(
-                                  255, 65, 189, 115), // Custom color
-                            ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                Get.to(() => const SignupView());
-                              },
-                          ),
-                        ],
-                      ),
-                    ),
-                    TextButton(
-                      child: Text(
-                        'Forgot password?',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[400], // Light gray color
-                        ),
-                      ),
-                      onPressed: () {
-                        AuthService.forgotPassword();
-                      },
-                    ),
-                  ],
-                ),
-              )
-            ],
+      body: OrientationBuilder(
+        builder: (context, orientation) {
+          bool isPortrait = orientation == Orientation.portrait;
+          return _buildLayout(isPortrait);
+        },
+      ),
+    );
+  }
+
+  Widget _buildLayout(bool isPortrait) {
+    return Container(
+      alignment: Alignment.center,
+      height: isPortrait ? 955.h : 430.h,
+      width: isPortrait ? 430.w : 955.w,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: const AssetImage("assets/images/loginpage.jpg"),
+          fit: BoxFit.cover,
+          colorFilter: ColorFilter.mode(
+            Colors.black.withOpacity(0.5),
+            BlendMode.darken,
           ),
         ),
       ),
+      child: SingleChildScrollView(
+        child: isPortrait
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ...component.buildLogo(isPortrait),
+                  SizedBox(height: 40.h),
+                  _buildContainer(isPortrait)
+                ],
+              )
+            : Padding(
+                padding: EdgeInsets.symmetric(vertical: 10.h),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Column(children: component.buildLogo(isPortrait)),
+                    SizedBox(width: 20.w),
+                    _buildContainer(isPortrait)
+                  ],
+                ),
+              ),
+      ),
     );
+  }
+
+  Widget _buildContainer(bool isPortrait) {
+    return Container(
+      padding: EdgeInsets.all(32.r),
+      constraints: BoxConstraints(maxWidth: isPortrait ? 500 : double.infinity),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: _buildForm(isPortrait),
+      ),
+    );
+  }
+
+  List<Widget> _buildForm(bool isPortrait) {
+    return [
+      component.buildTextField(
+        controller: _emailController,
+        hintText: 'Email',
+        prefixIcon: Icons.email_outlined,
+        isPortrait: isPortrait,
+      ),
+      SizedBox(height: 24.h),
+      component.buildPasswordField(
+        isPortrait: isPortrait,
+        toggleObscureText: controller.toggleObscureText,
+        controller: _passwordController,
+        obscureText: controller.obscureText,
+      ),
+      SizedBox(height: 24.h),
+      component.buildbtn("Login", controller.isLoading,isPortrait, _handleLogin),
+      SizedBox(height: 16.h),
+      component.buildActionText("Don't have an account? ", 'Sign Up',
+          () => Get.off(() => const SignupView()), isPortrait),
+      SizedBox(height: 12.h),
+      component.buildActionText(
+          '', 'Forgot password?', controller.forgotPassword, isPortrait),
+    ];
+  }
+
+  void _handleLogin() {
+    if (_emailController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Please input your email")));
+    } else if (_passwordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Please input your password")));
+    } else {
+      controller.login(_emailController.text, _passwordController.text);
+    }
   }
 }

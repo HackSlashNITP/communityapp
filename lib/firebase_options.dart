@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -48,7 +45,8 @@ class DefaultFirebaseOptions {
     appId: '1:320596142744:android:57dbe8bfcf178365d13eed',
     messagingSenderId: '320596142744',
     projectId: 'chat-b254f',
-    databaseURL: 'https://chat-b254f-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://chat-b254f-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'chat-b254f.firebasestorage.app',
   );
 
@@ -57,7 +55,8 @@ class DefaultFirebaseOptions {
     appId: '1:320596142744:ios:9d7f2b26967dd8f1d13eed',
     messagingSenderId: '320596142744',
     projectId: 'chat-b254f',
-    databaseURL: 'https://chat-b254f-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://chat-b254f-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'chat-b254f.firebasestorage.app',
     iosBundleId: 'com.example.communityapp',
   );
@@ -67,7 +66,8 @@ class DefaultFirebaseOptions {
     appId: '1:320596142744:ios:9d7f2b26967dd8f1d13eed',
     messagingSenderId: '320596142744',
     projectId: 'chat-b254f',
-    databaseURL: 'https://chat-b254f-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://chat-b254f-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'chat-b254f.firebasestorage.app',
     iosBundleId: 'com.example.communityapp',
   );
@@ -78,8 +78,20 @@ class DefaultFirebaseOptions {
     messagingSenderId: '320596142744',
     projectId: 'chat-b254f',
     authDomain: 'chat-b254f.firebaseapp.com',
-    databaseURL: 'https://chat-b254f-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://chat-b254f-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'chat-b254f.firebasestorage.app',
     measurementId: 'G-ZNQ41X5441',
   );
+
+  static const FirebaseOptions web = FirebaseOptions(
+      apiKey: "AIzaSyBoQGCn3G0-BHhM0CEWErdkEYX59hqKxEU",
+      authDomain: "chat-b254f.firebaseapp.com",
+      databaseURL:
+          "https://chat-b254f-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "chat-b254f",
+      storageBucket: "chat-b254f.firebasestorage.app",
+      messagingSenderId: "320596142744",
+      appId: "1:320596142744:web:265411438b165d2cd13eed",
+      measurementId: "G-LYN04E9H2V");
 }
