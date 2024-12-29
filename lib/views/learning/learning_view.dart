@@ -125,10 +125,111 @@ class _LearningPageState extends State<LearningPage> {
                     crossAxisSpacing: 16,
                     mainAxisSpacing: 16,
                     children: [
-                      _buildGridItem('Road Map', Icons.map, Colors.green),
-                      _buildGridItem('Playlist', Icons.playlist_play, Colors.blue),
-                      _buildGridItem('Projects', Icons.lightbulb, Colors.orange),
-                      _buildGridItem('PDF Notes', Icons.picture_as_pdf, Colors.red),
+                      GestureDetector(
+                        onTap: (){},
+                        child: Container(
+
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade200,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image(image: AssetImage('')),
+                              const SizedBox(height: 10),
+                              Text(
+                                'ROAD MAP',
+
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+
+                            ],
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: (){},
+                        child: Container(
+
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade200,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image(image: AssetImage('')),
+                              const SizedBox(height: 8),
+                              Text(
+                                'PLAYLIST',
+
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+
+                            ],
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: (){},
+                        child: Container(
+
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade200,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image(image: AssetImage('')),
+                              const SizedBox(height: 8),
+                              Text(
+                                'PROJECTS',
+
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+
+                            ],
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: (){},
+                        child: Container(
+
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade200,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image(image: AssetImage('')),
+                              const SizedBox(height: 8),
+                              Text(
+                                'ROAD MAP',
+
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+
+                            ],
+                          ),
+                        ),
+                      ),
+
                     ],
 
 
@@ -165,33 +266,6 @@ class _LearningPageState extends State<LearningPage> {
       ),
     );
   }
-}
-Widget _buildGridItem(String title, IconData icon, Color color) {
-  return Container(
-    decoration: BoxDecoration(
-      color: Colors.grey.shade200,
-      borderRadius: BorderRadius.circular(12),
-    ),
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(
-          icon,
-          size: 48,
-          color: color,
-        ),
-        const SizedBox(height: 8),
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-
-      ],
-    ),
-  );
 }
 
 
