@@ -73,7 +73,7 @@ class _StateLoginView extends State<LoginView> {
   Widget _buildContainer(bool isPortrait) {
     return Container(
       padding: EdgeInsets.all(32.r),
-      constraints: BoxConstraints(maxWidth: isPortrait ? 500 : double.infinity),
+      constraints: BoxConstraints(maxWidth: isPortrait ? 360 : double.infinity),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
