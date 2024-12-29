@@ -11,7 +11,7 @@ import 'edit_profile_view.dart';
 class ProfileView extends StatefulWidget {
   final String username;
 
-  const ProfileView({Key? key, required this.username}) : super(key: key);
+  const ProfileView({super.key, required this.username});
 
   @override
   State<ProfileView> createState() => _StateProfileView();
