@@ -7,19 +7,19 @@ import 'package:communityapp/views/learning/learning_view.dart';
 import 'package:communityapp/views/profile/profile_view.dart';
 
 class MainView extends StatelessWidget {
-  final String username;
+  final String userid;
   final BottomNavController bottomNavController = Get.put(BottomNavController());
   MainView({super.key, 
-    required this.username,
+    required this.userid,
 });
 
   @override
   Widget build(BuildContext context) {
     final List<Widget> screens = [
       HomeView(),
-      ChatView(username: username), //switch with chat page
+      ChatView(username: userid), //switch with chat page
       LearningPage(),
-      ProfileView(username: username),
+      ProfileView(username: userid),
     ];
     return Scaffold(
       body: Obx(() => screens[bottomNavController.selectedIndex.value]),

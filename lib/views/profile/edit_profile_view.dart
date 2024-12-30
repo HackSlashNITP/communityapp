@@ -4,6 +4,8 @@ import '../../controllers/profile_controller.dart';
 import '../../widgets/profile_widgets.dart';
 
 class EditProfilePage extends StatelessWidget {
+  const EditProfilePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     final ProfileController profileController = Get.find();

@@ -60,6 +60,7 @@ dependencies:
   open_filex: ^4.6.0
   hive_generator: ^2.0.1
   logger: ^2.5.0
+  flutter_screenutil: ^5.9.3
 
 dev_dependencies:
   flutter_test:
@@ -86,7 +87,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - .env
-    - assets/images/hackshashlogo.jpg
+    - assets/images/logo.jpg
     - assets/images/loginpage.jpg
     - assets/images/profile.jpg
     - assets/images/sendmail.png

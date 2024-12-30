@@ -10,13 +10,13 @@ class ProfileInfoTile extends StatelessWidget {
   final VoidCallback? onPressed;
 
   const ProfileInfoTile({
-    Key? key,
+    super.key,
     required this.title,
     required this.value,
     required this.leading,
     this.backgroundColor = const Color(0xffE6FCEF),
     this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -53,9 +53,9 @@ class ProfileInfoTile extends StatelessWidget {
               Row(
                 children: [
                   SizedBox(
-                    child: leading,
                     height: leadingSize,
                     width: leadingSize,
+                    child: leading,
                   ),
                   SizedBox(
                     width: isLandscape
@@ -95,7 +95,7 @@ class EditProfileTextField extends StatelessWidget {
   final String hintText;
 
 
-  EditProfileTextField({
+  const EditProfileTextField({super.key, 
     required this.controller,
     required this.labelText,
     required this.hintText,

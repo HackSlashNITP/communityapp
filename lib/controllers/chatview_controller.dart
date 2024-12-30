@@ -19,7 +19,6 @@ class ChatviewController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    log.d("I am alive haha ha");
     getGroupIds();
   }
 

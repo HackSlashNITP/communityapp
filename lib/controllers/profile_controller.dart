@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:communityapp/utils/logging.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -20,17 +21,19 @@ class ProfileController extends GetxController {
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
+  final log = Logging.log;
   //Fetch UserData
   Future<void> fetchUserData(String username) async {
     try {
       isLoading.value = true;
-      DocumentSnapshot snapshot = await _firestore.collection('users').doc(username).get();
+      DocumentSnapshot snapshot =
+          await _firestore.collection('users').doc(username).get();
       if (snapshot.exists) {
-        userData.value = ProfileModel.fromMap(snapshot.data() as Map<String, dynamic>);
+        userData.value =
+            ProfileModel.fromMap(snapshot.data() as Map<String, dynamic>);
       }
     } catch (e) {
-      print('Error fetching user data: $e');
+      log.e('Error fetching user data: $e');
       userData.value = null;
     } finally {
       isLoading.value = false;
@@ -38,17 +41,18 @@ class ProfileController extends GetxController {
   }
 
   //Update UserData
-  Future<void> updateUserProfile(String name, String linkedin, String github) async {
+  Future<void> updateUserProfile(
+      String name, String linkedin, String github) async {
     try {
       await _firestore.collection('users').doc(username).update({
-        'name' : name,
+        'name': name,
         'linkedin': linkedin,
         'github': github,
       });
 
       fetchUserData(username);
     } catch (e) {
-      print('Error updating profile: $e');
+      log.e('Error updating profile: $e');
     }
   }
 
@@ -57,21 +61,21 @@ class ProfileController extends GetxController {
     try {
       //Delete user from Firestore
       await _firestore.collection('users').doc(username).delete();
-      print('User deleted from Firestore');
+      log.e('User deleted from Firestore');
 
       //Delete the user from Firebase Authentication
       User? user = _auth.currentUser;
 
       if (user != null) {
         await user.delete();
-        print('User deleted from Firebase Authentication');
+        log.i('User deleted from Firebase Authentication');
       } else {
-        print('No user found in Firebase Authentication');
+        log.d('No user found in Firebase Authentication');
       }
 
       Get.offAll(() => LoginView());
     } catch (e) {
-      print('Error deleting account: $e');
+      log.e('Error deleting account: $e');
     }
   }
 }
