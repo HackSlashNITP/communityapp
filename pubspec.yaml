@@ -61,6 +61,8 @@ dependencies:
   hive_generator: ^2.0.1
   logger: ^2.5.0
   flutter_screenutil: ^5.9.3
+  dots_indicator: ^3.0.0
+  carousel_slider: ^5.0.0
 
 dev_dependencies:
   flutter_test:
@@ -91,6 +93,7 @@ flutter:
     - assets/images/loginpage.jpg
     - assets/images/profile.jpg
     - assets/images/sendmail.png
+    - assets/images/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
