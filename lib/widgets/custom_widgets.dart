@@ -1,4 +1,5 @@
 import 'package:communityapp/views/chat/chat_view.dart';
+import 'package:communityapp/views/chat/meeting_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:communityapp/views/home/home_view.dart';
@@ -17,7 +18,8 @@ class MainView extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<Widget> screens = [
       HomeView(),
-      ChatView(username: userid), //switch with chat page
+      ChatView(username: userid),
+      meetingpage(username: userid),//switch with chat page
       LearningPage(),
       ProfileView(username: userid),
     ];
@@ -37,6 +39,10 @@ class MainView extends StatelessWidget {
             BottomNavigationBarItem(
               icon: Icon(Icons.chat),
               label: 'Chat',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.meeting_room_outlined),
+              label: 'meet',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.school),

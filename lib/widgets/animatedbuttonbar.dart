@@ -57,6 +57,7 @@ class AnimatedButtonBar extends StatelessWidget {
                   child: TextButton(
                     onPressed: () {
                       controller.isGroup.value = false;
+
                     },
                     child: Text(
                       'Meetings',
@@ -67,7 +68,9 @@ class AnimatedButtonBar extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                       textAlign: TextAlign.center,
+
                     ),
+
                   ),
                 ),
               ],
