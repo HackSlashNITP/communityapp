@@ -3,6 +3,7 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 class AiChatController extends GetxController {
   var messages = <types.Message>[].obs;
 
@@ -19,7 +20,7 @@ class AiChatController extends GetxController {
         id: 'ai-bot',
         firstName: 'AI',
         imageUrl:
-        "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/final_keyword_header.width-1200.format-webp.webp");
+            "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/final_keyword_header.width-1200.format-webp.webp");
 
     final aiMessageId = DateTime.now().millisecondsSinceEpoch.toString();
     final aiMessage = types.TextMessage(
@@ -45,7 +46,7 @@ class AiChatController extends GetxController {
 
           if (index != -1) {
             final updatedMessage =
-            (messages[index] as types.TextMessage).copyWith(
+                (messages[index] as types.TextMessage).copyWith(
               text: (messages[index] as types.TextMessage).text + chunk.text!,
             );
             messages[index] = updatedMessage;
@@ -58,7 +59,7 @@ class AiChatController extends GetxController {
             id: 'ai-bot',
             firstName: 'AI',
             imageUrl:
-            "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/final_keyword_header.width-1200.format-webp.webp"),
+                "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/final_keyword_header.width-1200.format-webp.webp"),
         createdAt: DateTime.now().millisecondsSinceEpoch,
         id: const Uuid().v4(),
         text: 'Error: ${e.toString()}',

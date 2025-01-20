@@ -41,7 +41,7 @@ dependencies:
   firebase_database: ^11.1.6
   firebase_auth: ^5.3.3
   image_picker: ^1.1.2
-  file_picker: ^5.0.0
+  file_picker: ^8.1.7
   path_provider: ^2.0.11 
   font_awesome_flutter: ^10.8.0
   cloudinary_api: ^1.0.0
@@ -63,7 +63,13 @@ dependencies:
   flutter_screenutil: ^5.9.3
   dots_indicator: ^3.0.0
   carousel_slider: ^5.0.0
+<<<<<<< HEAD
   google_generative_ai: ^0.4.6
+=======
+  agora_rtc_engine: ^6.0.0
+  permission_handler: ^11.3.1
+
+>>>>>>> 571a34911d72b3ee5c0ae11b03a6fcc0598bc803
 
 dev_dependencies:
   flutter_test:
