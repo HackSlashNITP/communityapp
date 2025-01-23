@@ -1,4 +1,5 @@
 import 'package:communityapp/views/chat/chat_view.dart';
+import 'package:communityapp/views/chat/meeting_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:communityapp/views/home/home_view.dart';
@@ -7,19 +8,20 @@ import 'package:communityapp/views/learning/learning_view.dart';
 import 'package:communityapp/views/profile/profile_view.dart';
 
 class MainView extends StatelessWidget {
-  final String username;
+  final String userid;
   final BottomNavController bottomNavController = Get.put(BottomNavController());
   MainView({super.key, 
-    required this.username,
+    required this.userid,
 });
 
   @override
   Widget build(BuildContext context) {
     final List<Widget> screens = [
       HomeView(),
-      ChatView(username: username), //switch with chat page
+      ChatView(username: userid),
+      meetingpage(username: userid),//switch with chat page
       LearningPage(),
-      ProfileView(),
+      ProfileView(username: userid),
     ];
     return Scaffold(
       body: Obx(() => screens[bottomNavController.selectedIndex.value]),
@@ -37,6 +39,10 @@ class MainView extends StatelessWidget {
             BottomNavigationBarItem(
               icon: Icon(Icons.chat),
               label: 'Chat',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.meeting_room_outlined),
+              label: 'meet',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.school),

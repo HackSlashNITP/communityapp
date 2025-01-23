@@ -1,11 +1,11 @@
 import 'package:communityapp/controllers/chatview_controller.dart';
-import 'package:communityapp/models/user_model.dart';
+import 'package:communityapp/services/auth_service.dart';
 import 'package:communityapp/views/chat/chat_page.dart';
 import 'package:communityapp/widgets/animatedbuttonbar.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:communityapp/widgets/groupbox.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 
 class ChatView extends StatefulWidget {
   final String username;
@@ -63,17 +63,15 @@ class ChatViewState extends State<ChatView> {
                           Center(
                             child: GestureDetector(
                               onTap: () async {
-                                final box = await Hive.openBox("userBox");
-                                final user = box.get("user") as HiveUser;
-                                final username = user.firstname;
-                                log.d("User is $username");
+                                final name = AuthService.getDisplayName();
                                 Get.to(() => ChatPage(
-                                    username: username,
-                                    channelId: controller.groups[index].id
-                                        .toString(),
+                                    username: widget.username,
+                                    channelId:
+                                        controller.groups[index].id.toString(),
                                     channelName: controller.groups[index].name
                                         .toString(),
-                                    user: user.toChatUser()));
+                                    user: types.User(
+                                        id: widget.username, firstName: name)));
                               },
                               child: GroupBox(
                                 avatar: group.avatar.toString(),
