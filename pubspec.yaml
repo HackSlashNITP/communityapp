@@ -63,9 +63,13 @@ dependencies:
   flutter_screenutil: ^5.9.3
   dots_indicator: ^3.0.0
   carousel_slider: ^5.0.0
+<<<<<<< HEAD
+  google_generative_ai: ^0.4.6
+=======
   agora_rtc_engine: ^6.0.0
   permission_handler: ^11.3.1
 
+>>>>>>> 571a34911d72b3ee5c0ae11b03a6fcc0598bc803
 
 dev_dependencies:
   flutter_test:
@@ -97,6 +101,13 @@ flutter:
     - assets/images/profile.jpg
     - assets/images/sendmail.png
     - assets/images/
+    - assets/learning/roadmap_icon.png
+    - assets/learning/pdf_icon.png
+    - assets/learning/profile_img.png
+    - assets/learning/playlist_icon.png
+    - assets/learning/projects_icon.png
+    - assets/learning/leading_icon.png
+    - assets/learning/lesson_icon.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
