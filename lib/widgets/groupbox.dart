@@ -81,8 +81,7 @@ class GroupBox extends StatelessWidget {
                       border: Border.all(color: Colors.black)),
                   height: 80,
                   child: Text(
-                   "${sender ?? "Anonymous User"} : ${lastMessage ??
-                        "Kindly adhere to the community guidelines"}",
+                    "${sender ?? "Anonymous User"} : ${lastMessage ?? "Kindly adhere to the community guidelines"}",
                     softWrap: true,
                     style: TextStyle(
                       fontSize: 13,

@@ -34,7 +34,7 @@ class _ChatPageState extends State<ChatPage> {
         "hacker"; //To find unique user id for each user
     _controller = Get.put(ChatController(
         channelId: widget.channelId,
-        username: widget.username,
+        username: auth.currentUser?.displayName ?? widget.username,
         user: widget.user,
         userId: userid));
   }
