@@ -30,6 +30,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: const MyHomePage(),
+      debugShowCheckedModeBanner: false,
       builder: (context, child) {
         // Get the media query size
         final mediaQueryData = MediaQuery.of(context);

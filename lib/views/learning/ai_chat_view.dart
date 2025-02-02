@@ -27,7 +27,7 @@ class AiChatView extends StatelessWidget {
         children: [
           Expanded(
             child: Obx(() => Chat(
-              messages: controller.messages,
+              messages: controller.messages.toList(),
               onSendPressed: (partialText) {
                 final textMessage = types.TextMessage(
                   author: controller.user,
