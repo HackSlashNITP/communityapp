@@ -1,5 +1,6 @@
 import 'package:communityapp/res/colors.dart';
 import 'package:communityapp/views/learning/ai_chat_view.dart';
+import 'package:communityapp/views/learning/blogs/blogpage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../widgets/learning_card.dart';
@@ -187,9 +188,9 @@ class LearningView extends StatelessWidget {
       "onTap": () => print("Playlist tapped"),
     },
     {
-      "name": "Projects",
+      "name": "Blogs",
       "imagePath": "assets/learning/projects_icon.png",
-      "onTap": () => print("Projects tapped"),
+      "onTap": () =>Get.to(Blog_Page())
     },
     {
       "name": "Pdf Notes",
