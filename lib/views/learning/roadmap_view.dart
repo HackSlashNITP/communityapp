@@ -1,12 +1,12 @@
 import 'package:communityapp/models/course_model.dart';
-import 'package:communityapp/views/components/roadmap_components.dart';
+
 import 'package:flutter/material.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
 class MyRoadMapScreen extends StatelessWidget {
   final CourseModel myCourse;
   MyRoadMapScreen({super.key, required this.myCourse});
-  final component = RoadmapComponents();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
