@@ -15,6 +15,7 @@ import 'package:get/get_instance/get_instance.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:communityapp/models/member_model.dart';
 import 'package:get/route_manager.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomeView extends StatefulWidget {
@@ -25,19 +26,20 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  double height = Get.height;
-  double width = Get.width;
-
   BottomNavController controller = Get.put(BottomNavController());
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
 
     return OrientationBuilder(builder: (context, orientation) {
       bool isLandscape = orientation == Orientation.landscape;
       return Scaffold(
-        appBar: _buildAppBar(isLandscape),
+        appBar: _buildAppBar(isLandscape, height, width),
         body: LayoutBuilder(builder: (context, constraints) {
+          if (constraints.maxHeight == 0 || constraints.maxWidth == 0) {
+            return SizedBox();
+          }
           return SingleChildScrollView(
             child: Container(
               color: ColorPalette.pureWhite,
@@ -47,34 +49,36 @@ class _HomeViewState extends State<HomeView> {
                     color: ColorPalette.darkSlateBlue,
                     child: Column(
                       children: [
-                        _textField(),
+                        _textField(height, width, isLandscape),
                         SizedBox(
                           height: height * 0.02,
                         ),
                         Container(
-                            width: width,
-                            height: height * 0.28,
+                            // width: width,
+                            // height: isLandscape ? height * .4 : height * 0.28,
                             decoration: BoxDecoration(
                               color: ColorPalette.pureWhite,
                               borderRadius: BorderRadius.only(
                                   topLeft: Radius.circular(30),
                                   topRight: Radius.circular(30)),
                             ),
-                            child: Column(
-                              children: [
-                                // carousel slider
-                                _curoselview(),
-                                // dot indicator
-                                Obx(() => DotsIndicator(
-                                      position:
-                                          controller.CarouselController.value,
-                                      dotsCount: 4,
-                                      decorator: DotsDecorator(
-                                        color: Colors.grey,
-                                        activeColor: ColorPalette.black,
-                                      ),
-                                    )),
-                              ],
+                            child: Expanded(
+                              child: Column(
+                                children: [
+                                  // carousel slider
+                                  _curoselview(isLandscape, height, width),
+
+                                  // dot indicator
+                                  Obx(() => DotsIndicator(
+                                        position: controller.CarouselController.value,
+                                        dotsCount: 4,
+                                        decorator: DotsDecorator(
+                                          color: Colors.grey,
+                                          activeColor: ColorPalette.black,
+                                        ),
+                                      )),
+                                ],
+                              ),
                             )),
                       ],
                     ),
@@ -87,7 +91,7 @@ class _HomeViewState extends State<HomeView> {
                       behavior: const ScrollBehavior().copyWith(
                         physics: const BouncingScrollPhysics(),
                       ),
-                      child: myCommunityList(),
+                      child: myCommunityList(isLandscape, height, width),
                     ),
                   ),
                   SizedBox(height: 2), // Spacing between sections
@@ -112,7 +116,7 @@ class _HomeViewState extends State<HomeView> {
 
                       // Build your horizontal list using the loaded events
                       return SizedBox(
-                        height: isLandscape ? height * 0.36 : height * 0.36,
+                        height: isLandscape ? height * .65 : height * 0.36,
                         child: ScrollConfiguration(
                           behavior: const ScrollBehavior().copyWith(
                             physics: const BouncingScrollPhysics(),
@@ -120,6 +124,7 @@ class _HomeViewState extends State<HomeView> {
                           child: ListView.builder(
                             scrollDirection: Axis.horizontal,
                             itemCount: events.length,
+                            shrinkWrap: true,
                             itemBuilder: (context, index) {
                               return EventCard(
                                 event: events[index],
@@ -185,7 +190,7 @@ class _HomeViewState extends State<HomeView> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-              color: const Color(0xFF223345),
+              color: const Color(0xff223345),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
@@ -210,22 +215,23 @@ class _HomeViewState extends State<HomeView> {
 
   // App baar contaning menu option, hackslash logo and switch
 
-  PreferredSizeWidget _buildAppBar(bool isLanscape) {
+  PreferredSizeWidget _buildAppBar(
+      bool isLanscape, double height, double width) {
     return PreferredSize(
-        preferredSize: Size.fromHeight(isLanscape ? height * .3 : height * 0.2),
+        preferredSize: Size.fromHeight(isLanscape ? height * .6 : height * 0.2),
         child: Container(
           padding: EdgeInsets.only(
               top: height * 0.05, left: width * 0.03, right: width * 0.02),
           color: ColorPalette.darkSlateBlue,
           width: width * 0.9,
-          height: isLanscape ? height * .125 : height * 0.125,
+          height: isLanscape ? height * .2 : height * 0.125,
           child: Row(
             children: [
               // menu option
               Icon(
                 Icons.menu,
                 color: ColorPalette.pureWhite,
-                size: height * 0.05,
+                size: isLanscape ? height * .07 : height * 0.05,
               ),
               SizedBox(
                 width: width * 0.05,
@@ -233,11 +239,11 @@ class _HomeViewState extends State<HomeView> {
               // hackslash logo and name
               Image(
                 image: Image.asset('assets/images/logo.jpg').image,
-                height: height * 0.05,
+                height: isLanscape ? height * .07 : height * 0.05,
                 width: width * 0.1,
               ),
               SizedBox(
-                width: width * 0.015,
+                width: isLanscape ? width * .02 : width * 0.015,
               ),
               Text(
                 'Hackslash',
@@ -249,8 +255,8 @@ class _HomeViewState extends State<HomeView> {
               Spacer(),
               // switch for changing theme
               Obx(() => SizedBox(
-                    width: width * 0.12,
-                    height: height * 0.04,
+                    width: isLanscape ? width * .08 : width * 0.12,
+                    height: isLanscape ? height * .1 : height * 0.04,
                     child: FittedBox(
                       fit: BoxFit.fill,
                       child: Switch(
@@ -269,9 +275,9 @@ class _HomeViewState extends State<HomeView> {
   }
 
   // field for entering search values
-  Widget _textField() {
+  Widget _textField(double height, double width, bool isLanscape) {
     return Container(
-      height: height * 0.09,
+      height: isLanscape ? height * .15 : height * 0.09,
       padding: EdgeInsets.symmetric(
           horizontal: width * 0.035, vertical: height * 0.02),
       child: TextFormField(
@@ -298,49 +304,55 @@ class _HomeViewState extends State<HomeView> {
   }
   // carouselview
 
-  Widget _curoselview() {
+  Widget _curoselview(bool isLandscape, double height, double width) {
     return Column(
       children: [
         SizedBox(
-          height: height * 0.04,
+          height: isLandscape ? height * 0.04 : height * 0.04,
         ),
         SizedBox(
-          height: height * 0.2,
+          height: isLandscape ? height * .3 : height * 0.2,
           width: MediaQuery.sizeOf(context).width,
           child: CarouselSlider(
               options: CarouselOptions(
                   enlargeCenterPage: true,
                   padEnds: false,
                   enableInfiniteScroll: false,
-                  viewportFraction: 0.75,
+                  viewportFraction: isLandscape ? .85 : 0.75,
                   onPageChanged: (index, _) =>
-                      controller.updatePgaeIndicator(index),
+                      controller.updatePgaeIndicator(index.toDouble()),
                   autoPlay: true,
                   pauseAutoPlayOnTouch: true),
               items: [
+                // InkWell(
+                //   onTap: () {},
+                //   child: Image(
+                //     height: isLandscape ? height * .3 : height * 0.2,
+                //     width: isLandscape ? width * .85 : width * 0.75,
+                //     image: Image.asset(
+                //       'assets/images/learnToday.png',
+                //     ).image,
+                //     fit: BoxFit.contain,
+                //   ),
+                // ),
                 InkWell(
                   onTap: () {},
-                  child: Image(
-                    image: Image.asset(
-                      'assets/images/learnToday.png',
-                      height: 200,
-                    ).image,
-                    fit: BoxFit.fill,
-                  ),
+                  child: _innerElement(100, 149, 237, "What would you",
+                      "like to learn", "today?", height, width, isLandscape),
                 ),
                 InkWell(
                   onTap: () {},
-                  child: _innerElement(
-                      205, 149, 57, "Which topics to", "explore", "today?"),
+                  child: _innerElement(205, 149, 57, "Which topics to",
+                      "explore", "today?", height, width, isLandscape),
                 ),
                 InkWell(
-                  child: _innerElement(
-                      205, 57, 109, "When is the", "next event ", "happening"),
+                  child: _innerElement(205, 57, 109, "When is the",
+                      "next event ", "happening", height, width, isLandscape),
                   onTap: () {},
                 ),
                 InkWell(
-                  child: _innerElement(
-                      57, 205, 74, "What are the", "lastest", "projects?"),
+                  child: _innerElement(57, 205, 74, "What are the", "lastest",
+                      "projects?", height, width, isLandscape),
                   onTap: () {},
                 ),
               ]),
@@ -351,9 +363,11 @@ class _HomeViewState extends State<HomeView> {
 
   // custom widget for enetering each carouselview page
 
-  Widget _innerElement(
-      int red, int green, int blue, String line1, String line2, String line3) {
+  Widget _innerElement(int red, int green, int blue, String line1, String line2,
+      String line3, double height, double width, bool isLandscape) {
     return Container(
+      width: width * 1,
+      height: isLandscape ? height * .4 : height * 0.2,
       decoration: BoxDecoration(
           color: Color.fromRGBO(red, green, blue, 0.65),
           borderRadius: BorderRadius.circular(15)),
@@ -367,44 +381,45 @@ class _HomeViewState extends State<HomeView> {
               height: height * 0.01,
             ),
             Container(
-                height: height * 0.038,
+                height: isLandscape ? height * .05 : height * 0.038,
                 child: Text(line1,
                     style: TextStyle(
-                        fontSize: height * 0.026,
+                        fontSize: isLandscape ? height * .04 : height * 0.026,
                         color: ColorPalette.pureWhite,
                         fontWeight: FontWeight.w600,
                         overflow: TextOverflow.clip))),
             Container(
-                height: height * 0.038,
+                height: isLandscape ? height * .05 : height * 0.038,
                 child: Text(line2,
                     style: TextStyle(
-                        fontSize: height * 0.026,
+                        fontSize: isLandscape ? height * .04 : height * 0.026,
                         color: ColorPalette.pureWhite,
                         fontWeight: FontWeight.w600,
                         overflow: TextOverflow.clip))),
             Container(
-                height: height * 0.038,
+                height: isLandscape ? height * .05 : height * 0.038,
                 child: Text(line3,
                     style: TextStyle(
-                        fontSize: height * 0.026,
+                        fontSize: isLandscape ? height * .04 : height * 0.026,
                         color: ColorPalette.pureWhite,
                         fontWeight: FontWeight.w600,
                         overflow: TextOverflow.clip))),
             Container(
-              height: height * 0.03,
+              height: isLandscape ? height * .05 : height * 0.038,
               child: Row(
                 children: [
                   Flexible(
                       child: Text("Get started ",
                           style: TextStyle(
                               color: ColorPalette.pureWhite,
-                              fontSize: height * 0.017,
+                              fontSize:
+                                  isLandscape ? height * .022 : height * 0.017,
                               overflow: TextOverflow.clip))),
                   Container(
                       child: Icon(
                     Icons.arrow_forward_outlined,
                     color: ColorPalette.pureWhite,
-                    size: height * 0.017,
+                    size: isLandscape ? height * .02 : height * 0.017,
                   ))
                 ],
               ),
@@ -455,9 +470,9 @@ class EventCard extends StatelessWidget {
                   child: Image.network(
                     event.image,
                     //height: 140,
-                    height: isLandscape ? Get.height * .45 : Get.height * .21,
+                    height: isLandscape ? Get.height * .35 : Get.height * .21,
                     width: double.infinity,
-                    fit: BoxFit.cover,
+                    fit: BoxFit.fill,
                   ),
                 ),
                 SizedBox(
@@ -508,88 +523,152 @@ class EventDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // Make the background or AppBar fit your style
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text(event.title),
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+    return OrientationBuilder(builder: (context, orientation) {
+      bool isLandscape = orientation == Orientation.landscape;
+      return Scaffold(
+        // Make the background or AppBar fit your style
         backgroundColor: Colors.white,
-      ),
-      body: Center(
-        child: Hero(
-          tag: event.title,
-          child: Material(
-            color: Colors.transparent,
-            child: SingleChildScrollView(
-              child: Container(
-                margin: const EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ClipRRect(
-                      borderRadius:
-                          const BorderRadius.vertical(top: Radius.circular(12)),
-                      child: Image.network(
-                        event.image,
-                        width: double.infinity,
-                        height: 300,
-                        fit: BoxFit.cover,
-                      ),
+        appBar: AppBar(
+          title: Text(event.title),
+          backgroundColor: Colors.white,
+        ),
+        body: Center(
+          child: Hero(
+            tag: event.title,
+            child: Material(
+              color: Colors.transparent,
+              child: SingleChildScrollView(
+                child: Expanded(
+                  child: Container(
+                    margin: const EdgeInsets.all(16.0),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            event.title,
-                            style: const TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
+                    child: isLandscape ? Row(
+                      //crossAxisAlignment: CrossAxisAlignment.stretch,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      //mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: ClipRRect(
+                            borderRadius: const BorderRadius.all(Radius.circular(12)),
+                            child: Image.network(
+                              event.image,
+                             // width: double.infinity,
+                              //height: isLandscape ? height * .5 : height * .3,
+                              fit: BoxFit.cover,
                             ),
                           ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Venue: ${event.venue}',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              color: Colors.black87,
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  event.title,
+                                  style: const TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Venue: ${event.venue}',
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                Text(
+                                  'Time: ${event.time}',
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                                Text(
+                                  'Event Info \n ' + event.eventInfo,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey[800],
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          Text(
-                            'Time: ${event.time}',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              color: Colors.black87,
-                            ),
+                        ),
+                      ],
+                    )  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ClipRRect(
+                          borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(12)),
+                          child: Image.network(
+                            event.image,
+                            width: double.infinity,
+                            height: 300,
+                            fit: BoxFit.cover,
                           ),
-                          const SizedBox(height: 16),
-                          Text(
-                            'Event Info \n ' + event.eventInfo,
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey[800],
-                            ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                event.title,
+                                style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Venue: ${event.venue}',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                              Text(
+                                'Time: ${event.time}',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                'Event Info \n ' + event.eventInfo,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey[800],
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
             ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 }
 
-Widget myCommunityList() {
+Widget myCommunityList(bool isLandscape, double height, double width) {
   return FutureBuilder<List<CommunityModel>>(
       future: fetchAllCommunity(),
       builder: (context, snapshot) {
@@ -616,8 +695,8 @@ Widget myCommunityList() {
                             Get.to(CommunityView(myComm: currCommunity));
                           },
                           child: Container(
-                            height: 150,
-                            width: 150,
+                            height: isLandscape ? height * .45 : height * 0.26,
+                            width: isLandscape ? width * .25 : width * 0.45,
                             decoration: BoxDecoration(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(8)),
@@ -629,8 +708,8 @@ Widget myCommunityList() {
                               children: [
                                 Image.network(
                                   currCommunity.logo!,
-                                  height: 90,
-                                  width: 90,
+                                  height: 85,
+                                  width: 85,
                                 ),
                                 Text(
                                   currCommunity.category,
@@ -694,8 +773,9 @@ class CommunityView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
     int count = ((myComm.members!.length) ~/ 2);
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: communityAppBar(myComm.category),
@@ -706,54 +786,115 @@ class CommunityView extends StatelessWidget {
             children: [
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: isPortrait ? 25 : 45),
-                child: SizedBox(
-                  child: Expanded(
-                    child: Column(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(10),
-                            topRight: Radius.circular(10),
-                          ),
-                          child: Image.network(myComm.image),
-                        ),
-                        Container(
-                          //height: Get.height * .23,
-                          //width: MediaQuery.of(context).size.width * .85,
-                          decoration: const BoxDecoration(
-                            color: Color(0xffF1F1F1),
+                child: isPortrait
+                    ? Column(
+                        children: [
+                          ClipRRect(
                             borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(10),
-                              bottomRight: Radius.circular(10),
+                              topLeft: Radius.circular(10),
+                              topRight: Radius.circular(10),
+                            ),
+                            child: Image.network(
+                              myComm.image,
+                              height: height * .3,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
                             ),
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 15, horizontal: 15),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  myComm.name,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 18),
-                                ),
-                                SizedBox(
-                                  height: Get.height * .01,
-                                ),
-                                Text(
-                                  myComm.info ?? "",
-                                  style: TextStyle(fontSize: 13.5),
-                                ),
-                              ],
+                          Container(
+                            //height: Get.height * .23,
+                            //width: MediaQuery.of(context).size.width * .85,
+                            decoration: const BoxDecoration(
+                              color: Color(0xffF1F1F1),
+                              borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(10),
+                                bottomRight: Radius.circular(10),
+                              ),
                             ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 15, horizontal: 15),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    myComm.name,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 18),
+                                  ),
+                                  SizedBox(
+                                    height: Get.height * .01,
+                                  ),
+                                  Text(
+                                    myComm.info ?? "",
+                                    style: TextStyle(fontSize: 13.5),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    : Expanded(
+                        child: SizedBox(
+                          child: Row(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(10),
+                                  bottomLeft: Radius.circular(10),
+                                ),
+                                child: Image.network(
+                                  myComm.image,
+                                  height: height * .6,
+                                  width: width * .35,
+                                  //width: double.infinity,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              Expanded(
+                                child: Container(
+                                  //height: Get.height * .23,
+                                  //width: MediaQuery.of(context).size.width * .85,
+                                  height: height * .6,
+                                  decoration: const BoxDecoration(
+                                    color: Color(0xffF1F1F1),
+                                    borderRadius: BorderRadius.only(
+                                      topRight: Radius.circular(10),
+                                      bottomRight: Radius.circular(10),
+                                    ),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 15, horizontal: 15),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          myComm.name,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 18),
+                                        ),
+                                        SizedBox(
+                                          height: Get.height * .01,
+                                        ),
+                                        Text(
+                                          myComm.info ?? "",
+                                          style: TextStyle(fontSize: 13.5),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                ),
+                      ),
               ),
               SizedBox(
                 height: Get.height * .02,

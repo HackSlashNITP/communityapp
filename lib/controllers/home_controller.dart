@@ -5,7 +5,7 @@ class BottomNavController extends GetxController {
 
   RxBool isSwitch = false.obs;
 
-  RxInt CarouselController=0.obs;
+  RxDouble CarouselController=0.0.obs;
 
 
   void changeIndex(int index) {
@@ -17,7 +17,7 @@ class BottomNavController extends GetxController {
   }
   //for dot indicator
 
-  void updatePgaeIndicator(int index){
+  void updatePgaeIndicator(double index){
     CarouselController.value=index;
   }
 }
