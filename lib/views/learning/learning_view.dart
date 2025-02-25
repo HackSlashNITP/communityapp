@@ -4,6 +4,7 @@ import 'package:communityapp/views/learning/blogs/blogpage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../widgets/learning_card.dart';
+import '../youtube/PlaylistsScreen.dart';
 
 class LearningView extends StatelessWidget {
   LearningView({super.key, this.name, this.uid});
@@ -185,12 +186,16 @@ class LearningView extends StatelessWidget {
     {
       "name": "Playlist",
       "imagePath": "assets/learning/playlist_icon.png",
-      "onTap": () => print("Playlist tapped"),
+      "onTap": () => Get.to(
+            () => PlaylistsScreen(
+              channelId: 'UCFEHqTxq-jVK_jl263fz0kg',
+            ),
+          ),
     },
     {
       "name": "Blogs",
       "imagePath": "assets/learning/projects_icon.png",
-      "onTap": () =>Get.to(Blog_Page())
+      "onTap": () => Get.to(Blog_Page())
     },
     {
       "name": "Pdf Notes",
