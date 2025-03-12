@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -18,8 +19,8 @@ class AiChatView extends StatelessWidget {
     final AiChatController controller = Get.find<AiChatController>();
     return Scaffold(
       body: Container(
-        height: Get.height,
-        width: Get.width,
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
           color: ColorPalette.bgColor,
         ),
@@ -60,7 +61,7 @@ class AiChatView extends StatelessWidget {
                           style: TextStyle(
                             color: ColorPalette.pureWhite,
                             fontWeight: FontWeight.w900,
-                            fontSize: Get.width * 0.1,
+                            fontSize: 50.sp,
                           ),
                         ),
                       ),

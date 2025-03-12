@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 
 class LearningCard extends StatelessWidget {
   const LearningCard(
@@ -20,7 +20,7 @@ class LearningCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-          margin: EdgeInsets.all(8),
+          margin: EdgeInsets.all(8.h),
           decoration: BoxDecoration(
               color: const Color(0xFFE3F5FF),
               borderRadius: BorderRadius.circular(20)),
@@ -29,7 +29,7 @@ class LearningCard extends StatelessWidget {
             children: [
               Image.asset(
                 imagePath,
-                height: width * 0.2,
+                height: 100.sp,
               ),
               const SizedBox(
                 height: 10,
@@ -37,7 +37,7 @@ class LearningCard extends StatelessWidget {
               Text(
                 cardName.toUpperCase(),
                 style: TextStyle(
-                    fontWeight: FontWeight.bold, fontSize: width * 0.05),
+                    fontWeight: FontWeight.bold, fontSize: 24.sp),
               )
             ],
           )),
