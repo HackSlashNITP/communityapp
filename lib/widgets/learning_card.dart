@@ -1,12 +1,13 @@
-import '../res/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 class LearningCard extends StatelessWidget {
-  const LearningCard({
-    super.key,
-    required this.imagePath,
-    required this.cardName,
-    required this.onTap});
+  const LearningCard(
+      {super.key,
+      required this.imagePath,
+      required this.cardName,
+      required this.onTap});
 
   final String imagePath;
   final String cardName;
@@ -14,30 +15,32 @@ class LearningCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
+    double width = Get.width;
 
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05 , vertical: screenWidth * 0.03),
+    return GestureDetector(
+      onTap: onTap,
       child: Container(
-        decoration: BoxDecoration(
-            color: ColorPalette.lightAquaGreen,
-            borderRadius: BorderRadius.circular(20)),
-        height: screenWidth * 0.5,
-        width: screenWidth * 0.4,
-        child: SizedBox(
+          margin: EdgeInsets.all(8.h),
+          decoration: BoxDecoration(
+              color: const Color(0xFFE3F5FF),
+              borderRadius: BorderRadius.circular(20)),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset(imagePath),
+              Image.asset(
+                imagePath,
+                height: 100.sp,
+              ),
+              const SizedBox(
+                height: 10,
+              ),
               Text(
-                cardName,
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                cardName.toUpperCase(),
+                style: TextStyle(
+                    fontWeight: FontWeight.bold, fontSize: 24.sp),
               )
             ],
-          ),
-        ),
-      ),
+          )),
     );
   }
 }

@@ -11,7 +11,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:communityapp/services/chat_service.dart';
 import 'package:mime/mime.dart';
-import 'package:open_filex/open_filex.dart';
+
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
@@ -165,74 +165,74 @@ class ChatController extends GetxController {
   }
 
   void handleMessageTap(BuildContext context, types.Message message) async {
-    if (message is types.FileMessage) {
-      var localPath = message.uri;
+    // if (message is types.FileMessage) {
+    //   var localPath = message.uri;
 
-      if (localPath.startsWith('http')) {
-        try {
-          // Find the message index in the list
-          final index =
-              messagesList.indexWhere((element) => element.id == message.id);
+    //   if (localPath.startsWith('http')) {
+    //     try {
+    //       // Find the message index in the list
+    //       final index =
+    //           messagesList.indexWhere((element) => element.id == message.id);
 
-          // Update the message to show loading status
-          final updatedMessage =
-              (messagesList[index] as types.FileMessage).copyWith(
-            isLoading: true,
-          );
-          messagesList[index] = updatedMessage;
+    //       // Update the message to show loading status
+    //       final updatedMessage =
+    //           (messagesList[index] as types.FileMessage).copyWith(
+    //         isLoading: true,
+    //       );
+    //       messagesList[index] = updatedMessage;
 
-          // Update in Hive
-          await _chatService.updateMessageInHive(updatedMessage);
+    //       // Update in Hive
+    //       await _chatService.updateMessageInHive(updatedMessage);
 
-          // Download the file
-          final client = http.Client();
-          final request = await client.get(Uri.parse(message.uri));
-          final bytes = request.bodyBytes;
+    //       // Download the file
+    //       final client = http.Client();
+    //       final request = await client.get(Uri.parse(message.uri));
+    //       final bytes = request.bodyBytes;
 
-          // Get the external storage directory
-          final externalDir = await getExternalStorageDirectory();
-          if (externalDir == null) {
-            Get.snackbar("Error", "External storage directory not found");
-            return;
-          }
-          final directoryPath = externalDir.path;
+    //       // Get the external storage directory
+    //       final externalDir = await getExternalStorageDirectory();
+    //       if (externalDir == null) {
+    //         Get.snackbar("Error", "External storage directory not found");
+    //         return;
+    //       }
+    //       final directoryPath = externalDir.path;
 
-          // Create the directory if it doesn't exist
-          final directory = Directory(directoryPath);
-          if (!await directory.exists()) {
-            await directory.create(recursive: true);
-          }
+    //       // Create the directory if it doesn't exist
+    //       final directory = Directory(directoryPath);
+    //       if (!await directory.exists()) {
+    //         await directory.create(recursive: true);
+    //       }
 
-          // Sanitize file name
-          String sanitizedFileName =
-              message.name.replaceAll(RegExp(r'[<>:"/\\|?*]'), '_');
-          localPath = '$directoryPath/$sanitizedFileName';
+    //       // Sanitize file name
+    //       String sanitizedFileName =
+    //           message.name.replaceAll(RegExp(r'[<>:"/\\|?*]'), '_');
+    //       localPath = '$directoryPath/$sanitizedFileName';
 
-          if (!await File(localPath).exists()) {
-            // Save the file only if it doesn't exist
-            final file = File(localPath);
-            await file.writeAsBytes(bytes);
-          }
-        } catch (e) {
-          Logging.log.e("Error downloading file: $e");
-        } finally {
-          final index =
-              messagesList.indexWhere((element) => element.id == message.id);
-          final updatedMessage = (messagesList[index] as types.FileMessage)
-              .copyWith(isLoading: null, uri: localPath);
+    //       if (!await File(localPath).exists()) {
+    //         // Save the file only if it doesn't exist
+    //         final file = File(localPath);
+    //         await file.writeAsBytes(bytes);
+    //       }
+    //     } catch (e) {
+    //       Logging.log.e("Error downloading file: $e");
+    //     } finally {
+    //       final index =
+    //           messagesList.indexWhere((element) => element.id == message.id);
+    //       final updatedMessage = (messagesList[index] as types.FileMessage)
+    //           .copyWith(isLoading: null, uri: localPath);
 
-          messagesList[index] = updatedMessage;
+    //       messagesList[index] = updatedMessage;
 
-          // Update in Hive
-          await _chatService.updateMessageInHive(updatedMessage);
-        }
-      }
-      if (await File(localPath).exists()) {
-        await OpenFilex.open(localPath);
-      } else {
-        Logging.log.e("File does not exist at path: $localPath");
-      }
-    }
+    //       // Update in Hive
+    //       await _chatService.updateMessageInHive(updatedMessage);
+    //     }
+    //   }
+    //   if (await File(localPath).exists()) {
+    //     await OpenFilex.open(localPath);
+    //   } else {
+    //     Logging.log.e("File does not exist at path: $localPath");
+    //   }
+    // }
   }
 
   void handlePreviewDataFetched(
