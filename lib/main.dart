@@ -2,6 +2,8 @@ import 'package:communityapp/firebase_options.dart';
 import 'package:communityapp/models/message_model.dart';
 import 'package:communityapp/models/user_model.dart';
 import 'package:communityapp/views/auth/login_view.dart';
+import 'package:communityapp/views/home/home_view.dart';
+import 'package:communityapp/views/learning/blogs/blogpage.dart';
 
 import 'package:communityapp/widgets/custom_widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -20,9 +22,11 @@ void main() async {
   Hive.registerAdapter(HiveMessageAdapter());
   Hive.registerAdapter(HiveUserAdapter());
   runApp(const GetMaterialApp(
-    home: MyApp(),
+
+    home: Blog_Page(),
     debugShowCheckedModeBanner: false,
   ));
+
 }
 
 class MyApp extends StatelessWidget {
