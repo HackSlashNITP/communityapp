@@ -19,7 +19,7 @@ class MainView extends StatelessWidget {
     final List<Widget> screens = [
       HomeView(),
       ChatView(username: userid),
-      meetingpage(username: userid),
+      MeetingPage(username: userid),
       LearningView(),
       ProfileView(username: userid),
     ];
