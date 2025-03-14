@@ -1,104 +1,141 @@
-
 import 'package:communityapp/controllers/blog_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 
 class post_Page extends StatefulWidget {
   const post_Page({super.key});
 
   @override
-  State<post_Page> createState() => _post_PageState();
+  State<post_Page> createState() => _PostPageState();
 }
 
-class _post_PageState extends State<post_Page> {
-  
-  BlogController blogController=Get.put(BlogController());
-  
-  
-  double height=Get.height;
-  double width=Get.width;
+class _PostPageState extends State<post_Page> {
+  BlogController blogController = Get.put(BlogController());
 
- 
-
+  double height = Get.height;
+  double width = Get.width;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _appBar(),
-      body: _postForm(),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF2E3A59),Color(0xFF110E2B)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: width * 0.05),
+          child: Column(
+            children: [
+              Expanded(child: _postForm()),
+              SizedBox(height: 20),
+              _bottomActions(),
+              SizedBox(height: 20),
+            ],
+          ),
+        ),
+      ),
     );
   }
-  PreferredSizeWidget _appBar(){
+
+  PreferredSizeWidget _appBar() {
     return AppBar(
-        centerTitle: true,
-        title: Text("New Post",style:TextStyle(color: Colors.white,fontSize: 25,fontWeight: FontWeight.w500),),
-        backgroundColor: Color.fromRGBO(34, 51, 69, 1.0),
-      );
+      centerTitle: true,
+      backgroundColor: Color.fromARGB(255, 56, 50, 112),
+      title: Text("New Post", style: TextStyle(color: Colors.grey, fontSize: 22, fontWeight: FontWeight.w600)),
+    
+     
+    );
   }
 
-  Widget _postForm(){
-    return  Padding(padding: EdgeInsets.symmetric(horizontal: width*0.05),
+  Widget _postForm() {
+    return SingleChildScrollView(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-         Expanded(child: TextField(
-          controller: blogController.controller.value,
-          maxLines: null,
-          decoration: InputDecoration(
-            hintText: "Write in Markdown..",
-          ),
-         )),
-         SizedBox(height: height*0.05,),
-                 Obx(() {
-          if (blogController.localImage.value!=null) {
-            return Column(
-              children: [
-                
-                   Image.file(
-                    blogController.localImage.value!,
-                    height: height * 0.25,
-                    
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-                
-                SizedBox(height: 10),
-                Text("Selected Image", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              ],
-            );
-          }
-           else {
-            return SizedBox(); // Hide if no image selected
-          }
-        }),
-
-        SizedBox(height: height * 0.02),
-
-
-       
-         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [ Obx(()=>Container(
-
-            height: height*0.06,
-            width: width*0.7,
-            child: ElevatedButton(onPressed: (){
-                 blogController.isLoading? null: blogController.submitPost();
-                }, child: blogController.isLoading ? const CircularProgressIndicator() : Text("Submit",style: TextStyle(fontSize:width*0.06),), ),
-          )),
-              IconButton(onPressed: (){
-                blogController.getImage();
-              }, icon: Icon(Icons.image),
-              ),
-             
-             
-         ],),
-         SizedBox(height: height*0.02,)
-          
-         
+          _inputField("Title", "Enter Title...", blogController.titleController.value),
+          SizedBox(height: height * 0.02),
+          _inputField("Content", "Write content in Markdown...", blogController.contentController.value, maxLines: 5),
+          SizedBox(height: height * 0.03),
+          _imagePreview(),
         ],
       ),
+    );
+  }
 
+  Widget _inputField(String label, String hint, TextEditingController controller, {int maxLines = 1}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+        SizedBox(height: 6),
+        TextField(
+          controller: controller,
+          maxLines: maxLines,
+          cursorColor: Colors.white,
+          style: TextStyle(color: Colors.white),
+          decoration: InputDecoration(
+            
+            hintText: hint,
+            hintStyle: TextStyle(color: Colors.white54),
+            filled: true,
+            fillColor: Colors.white10,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _imagePreview() {
+    return Obx(() {
+      if (blogController.localImage.value != null) {
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: Image.file(
+            blogController.localImage.value!,
+            height: height * 0.25,
+            width: double.infinity,
+            fit: BoxFit.cover,
+          ),
+        );
+      } else {
+        return SizedBox();
+      }
+    });
+  }
+
+  Widget _bottomActions() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        FloatingActionButton(
+          onPressed: blogController.getImage,
+          backgroundColor: Colors.blueAccent,
+          child: Icon(Icons.image, color: Colors.white),
+        ),
+        SizedBox(
+          width: width * 0.7,
+          child: Obx(() => ElevatedButton(
+                onPressed: blogController.isLoading ? null : blogController.submitPost,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blueAccent,
+                  padding: EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                child: blogController.isLoading
+                    ? CircularProgressIndicator(color: Colors.white)
+                    : Text("Submit", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold,color: Colors.white)),
+              )),
+        ),
+      ],
     );
   }
 }
