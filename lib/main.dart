@@ -23,7 +23,7 @@ void main() async {
   Hive.registerAdapter(HiveUserAdapter());
   runApp(const GetMaterialApp(
 
-    home: Blog_Page(),
+    home: MyApp(),
     debugShowCheckedModeBanner: false,
   ));
 
