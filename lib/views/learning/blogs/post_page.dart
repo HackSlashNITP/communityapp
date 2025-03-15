@@ -1,15 +1,16 @@
 import 'package:communityapp/controllers/blog_controller.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class post_Page extends StatefulWidget {
-  const post_Page({super.key});
+class PostPage extends StatefulWidget {
+  const PostPage({super.key});
 
   @override
-  State<post_Page> createState() => _PostPageState();
+  State<PostPage> createState() => _PostPageState();
 }
 
-class _PostPageState extends State<post_Page> {
+class _PostPageState extends State<PostPage> {
   BlogController blogController = Get.put(BlogController());
 
   double height = Get.height;
@@ -22,7 +23,7 @@ class _PostPageState extends State<post_Page> {
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF2E3A59),Color(0xFF110E2B)],
+            colors: [Color(0xFF2E3A59), Color(0xFF110E2B)],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -46,9 +47,9 @@ class _PostPageState extends State<post_Page> {
     return AppBar(
       centerTitle: true,
       backgroundColor: Color.fromARGB(255, 56, 50, 112),
-      title: Text("New Post", style: TextStyle(color: Colors.grey, fontSize: 22, fontWeight: FontWeight.w600)),
-    
-     
+      title: Text("New Post",
+          style: TextStyle(
+              color: Colors.grey, fontSize: 22, fontWeight: FontWeight.w600)),
     );
   }
 
@@ -57,9 +58,12 @@ class _PostPageState extends State<post_Page> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _inputField("Title", "Enter Title...", blogController.titleController.value),
+          _inputField(
+              "Title", "Enter Title...", blogController.titleController.value),
           SizedBox(height: height * 0.02),
-          _inputField("Content", "Write content in Markdown...", blogController.contentController.value, maxLines: 5),
+          _inputField("Content", "Write content in Markdown...",
+              blogController.contentController.value,
+              maxLines: 5),
           SizedBox(height: height * 0.03),
           _imagePreview(),
         ],
@@ -67,11 +71,17 @@ class _PostPageState extends State<post_Page> {
     );
   }
 
-  Widget _inputField(String label, String hint, TextEditingController controller, {int maxLines = 1}) {
+  Widget _inputField(
+      String label, String hint, TextEditingController controller,
+      {int maxLines = 1}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+        Text(label,
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.bold)),
         SizedBox(height: 6),
         TextField(
           controller: controller,
@@ -79,7 +89,6 @@ class _PostPageState extends State<post_Page> {
           cursorColor: Colors.white,
           style: TextStyle(color: Colors.white),
           decoration: InputDecoration(
-            
             hintText: hint,
             hintStyle: TextStyle(color: Colors.white54),
             filled: true,
@@ -96,7 +105,17 @@ class _PostPageState extends State<post_Page> {
 
   Widget _imagePreview() {
     return Obx(() {
-      if (blogController.localImage.value != null) {
+      if (kIsWeb && blogController.webImageBytes.value != null) {
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: Image.memory(
+            blogController.webImageBytes.value!,
+            height: height * 0.25,
+            width: double.infinity,
+            fit: BoxFit.cover,
+          ),
+        );
+      } else if (!kIsWeb && blogController.localImage.value != null) {
         return ClipRRect(
           borderRadius: BorderRadius.circular(12),
           child: Image.file(
@@ -107,7 +126,7 @@ class _PostPageState extends State<post_Page> {
           ),
         );
       } else {
-        return SizedBox();
+        return const SizedBox();
       }
     });
   }
@@ -117,22 +136,31 @@ class _PostPageState extends State<post_Page> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         FloatingActionButton(
-          onPressed: blogController.getImage,
+          onPressed: () async {
+            await blogController.getImage();
+          },
           backgroundColor: Colors.blueAccent,
           child: Icon(Icons.image, color: Colors.white),
         ),
         SizedBox(
           width: width * 0.7,
           child: Obx(() => ElevatedButton(
-                onPressed: blogController.isLoading ? null : blogController.submitPost,
+                onPressed: blogController.isLoading.value
+                    ? null
+                    : blogController.submitPost,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blueAccent,
                   padding: EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
                 ),
-                child: blogController.isLoading
+                child: blogController.isLoading.value
                     ? CircularProgressIndicator(color: Colors.white)
-                    : Text("Submit", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold,color: Colors.white)),
+                    : Text("Submit",
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white)),
               )),
         ),
       ],
