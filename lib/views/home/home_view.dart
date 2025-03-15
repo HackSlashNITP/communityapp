@@ -1,21 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:communityapp/models/community_model.dart';
-import 'package:communityapp/models/course_model.dart';
-
-import 'package:communityapp/views/learning/roadmap_view.dart';
 import 'package:flutter/material.dart';
-
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:communityapp/controllers/home_controller.dart';
 import 'package:communityapp/res/colors.dart';
-
-import 'package:dots_indicator/dots_indicator.dart';
-
 import 'package:get/get_instance/get_instance.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:communityapp/models/member_model.dart';
 import 'package:get/route_manager.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomeView extends StatefulWidget {
@@ -40,141 +30,123 @@ class _HomeViewState extends State<HomeView> {
           if (constraints.maxHeight == 0 || constraints.maxWidth == 0) {
             return SizedBox();
           }
-          return SingleChildScrollView(
-            child: Container(
-              color: ColorPalette.pureWhite,
-              child: Column(
-                children: [
-                  Container(
-                    color: ColorPalette.darkSlateBlue,
-                    child: Column(
-                      children: [
-                        _textField(height, width, isLandscape),
-                        SizedBox(
-                          height: height * 0.02,
-                        ),
-                        Container(
-                            // width: width,
-                            // height: isLandscape ? height * .4 : height * 0.28,
-                            decoration: BoxDecoration(
-                              color: ColorPalette.pureWhite,
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(30),
-                                  topRight: Radius.circular(30)),
-                            ),
-                            child: Expanded(
-                              child: Column(
-                                children: [
-                                  // carousel slider
-                                  _curoselview(isLandscape, height, width),
-
-                                  // dot indicator
-                                  Obx(() => DotsIndicator(
-                                        position: controller.CarouselController.value,
-                                        dotsCount: 4,
-                                        decorator: DotsDecorator(
-                                          color: Colors.grey,
-                                          activeColor: ColorPalette.black,
-                                        ),
-                                      )),
-                                ],
+          return Column(
+            children: [
+              Container(
+                color: const Color(0xFF110E2B),
+                height: 100,
+                child: Container(
+                  child: Column(
+                    children: [
+                      SizedBox(height: 5,),
+                      Container(
+                        child: Row(
+                          children: [
+                            Spacer(),
+                            Container(
+                              height: 50,
+                              width: 50,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(image: AssetImage('assets/images/logo.jpg'),
+                                  fit: BoxFit.fill,
+                                )
                               ),
-                            )),
-                      ],
-                    ),
-                  ),
-
-                  _topHead("Explore Community"),
-                  SizedBox(
-                    height: isLandscape ? constraints.maxHeight * 0.6 : 160,
-                    child: ScrollConfiguration(
-                      behavior: const ScrollBehavior().copyWith(
-                        physics: const BouncingScrollPhysics(),
-                      ),
-                      child: myCommunityList(isLandscape, height, width),
-                    ),
-                  ),
-                  SizedBox(height: 2), // Spacing between sections
-                  _topHead("Upcoming Events"),
-                  FutureBuilder<List<EventOption>>(
-                    future: fetchAllEvents(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        // Loading spinner while fetching data
-                        return const Center(child: CircularProgressIndicator());
-                      }
-                      if (snapshot.hasError) {
-                        // Display an error if one occurred
-                        return Center(child: Text('Error: ${snapshot.error}'));
-                      }
-
-                      // If we get here, data is loaded or empty
-                      final events = snapshot.data ?? [];
-                      if (events.isEmpty) {
-                        return const Center(child: Text('No events found.'));
-                      }
-
-                      // Build your horizontal list using the loaded events
-                      return SizedBox(
-                        height: isLandscape ? height * .65 : height * 0.36,
-                        child: ScrollConfiguration(
-                          behavior: const ScrollBehavior().copyWith(
-                            physics: const BouncingScrollPhysics(),
-                          ),
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: events.length,
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              return EventCard(
-                                event: events[index],
-                                isLandscape: isLandscape,
-                              );
-                            },
-                          ),
+                            ),
+                            SizedBox(width: 5,),
+                            Container(
+                              child: Text("Hackslash", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 40),),
+                            ),
+                            Spacer(),
+                          ],
                         ),
-                      );
-                    },
+                      ),
+                      Center(
+                        child: Text("moz://a", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25),),
+                      )
+                    ],
                   ),
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  color: const Color(0xFF110E2B),
+                  child: SingleChildScrollView(
+                    child: Container(
+                      //height: MediaQuery.of(context).size.height,
+                      decoration: BoxDecoration(
+                        color: ColorPalette.pureWhite,
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(30),
+                            topRight: Radius.circular(30)),
+                      ),
+                      child: Column(
+                        children: [
+                          _topHead("Upcoming Events"),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 15),
+                            child: FutureBuilder<List<EventOption>>(
+                              future: fetchAllEvents(),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                  // Loading spinner while fetching data
+                                  return const Center(child: CircularProgressIndicator());
+                                }
+                                if (snapshot.hasError) {
+                                  // Display an error if one occurred
+                                  return Center(child: Text('Error: ${snapshot.error}'));
+                                }
 
-                  const SizedBox(height: 2), // Spacing between sections
-                  _topHead("Recent Courses"),
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
-                    child: FutureBuilder<List<CourseModel>>(
-                      future: fetchAllCourses(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const CircularProgressIndicator();
-                        }
-                        if (snapshot.hasError) {
-                          return Text('Error: ${snapshot.error}');
-                        }
-                        final courses = snapshot.data ?? [];
+                                // If we get here, data is loaded or empty
+                                final events = snapshot.data ?? [];
+                                if (events.isEmpty) {
+                                  return const Center(child: Text('No events found.'));
+                                }
 
-                        return ListView.builder(
-                          // ...
-                          itemCount: courses.length,
-                          physics: NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          scrollDirection: Axis.vertical,
-                          itemBuilder: (context, index) {
-                            return CourseCard(
-                              course: courses[index],
-                              width: MediaQuery.of(context).size.width,
-                              height: MediaQuery.of(context).size.height,
-                              isLandscape: isLandscape,
-                            );
-                          },
-                        );
-                      },
+                                // Build your horizontal list using the loaded events
+                                return SizedBox(
+                                  height: isLandscape ? height * .65 : height * 0.33,
+                                  child: ScrollConfiguration(
+                                    behavior: const ScrollBehavior().copyWith(
+                                      physics: const BouncingScrollPhysics(),
+                                    ),
+                                    child: ListView.builder(
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: events.length,
+                                      shrinkWrap: true,
+                                      itemBuilder: (context, index) {
+                                        return EventCard(
+                                          event: events[index],
+                                          isLandscape: isLandscape,
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                          _topHead("Explore Community"),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 15),
+                            child: SizedBox(
+                              // width: isLandscape ? constraints.maxWidth *0.5 :375,
+                              height: isLandscape ? constraints.maxHeight * 0.6 : 130,
+                              child: ScrollConfiguration(
+                                behavior: const ScrollBehavior().copyWith(
+                                  physics: const BouncingScrollPhysics(),
+                                ),
+                                child: myCommunityList(isLandscape, height, width),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 20,),
+                        ],
+                      ),
                     ),
                   ),
-                ],
+                ),
               ),
-            ),
+            ],
           );
         }),
       );
@@ -190,22 +162,16 @@ class _HomeViewState extends State<HomeView> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-              color: const Color(0xff223345),
+              // color: const Color(0xff223345),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
               title,
               style: TextStyle(
-                fontSize: 12,
+                fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: Colors.black,
               ),
-            ),
-          ),
-          Expanded(
-            child: Divider(
-              color: Colors.black54,
-              thickness: 1,
             ),
           ),
         ],
@@ -214,7 +180,6 @@ class _HomeViewState extends State<HomeView> {
   }
 
   // App baar contaning menu option, hackslash logo and switch
-
   PreferredSizeWidget _buildAppBar(
       bool isLanscape, double height, double width) {
     return PreferredSize(
@@ -222,146 +187,39 @@ class _HomeViewState extends State<HomeView> {
         child: Container(
           padding: EdgeInsets.only(
               top: height * 0.05, left: width * 0.03, right: width * 0.02),
-          color: ColorPalette.darkSlateBlue,
+          color: const Color(0xFF110E2B),
           width: width * 0.9,
           height: isLanscape ? height * .2 : height * 0.125,
           child: Row(
             children: [
               // menu option
               Icon(
-                Icons.menu,
+                Icons.info_outline,
                 color: ColorPalette.pureWhite,
-                size: isLanscape ? height * .07 : height * 0.05,
+                size: isLanscape ? height * .03 : height * 0.03,
               ),
-              SizedBox(
-                width: width * 0.05,
-              ),
-              // hackslash logo and name
-              Image(
-                image: Image.asset('assets/images/logo.jpg').image,
-                height: isLanscape ? height * .07 : height * 0.05,
-                width: width * 0.1,
-              ),
+
               SizedBox(
                 width: isLanscape ? width * .02 : width * 0.015,
               ),
               Text(
-                'Hackslash',
+                'About us',
                 style: TextStyle(
                     color: ColorPalette.pureWhite,
-                    fontSize: 24,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold),
               ),
               Spacer(),
-              // switch for changing theme
-              Obx(() => SizedBox(
-                    width: isLanscape ? width * .08 : width * 0.12,
-                    height: isLanscape ? height * .1 : height * 0.04,
-                    child: FittedBox(
-                      fit: BoxFit.fill,
-                      child: Switch(
-                          value: controller.isSwitch.value,
-                          inactiveTrackColor: ColorPalette.pureWhite,
-                          activeColor: ColorPalette.darkSlateBlue,
-                          activeTrackColor: ColorPalette.pureWhite,
-                          onChanged: (value) {
-                            controller.changeSwitch();
-                          }),
-                    ),
-                  ))
+              Icon(
+                Icons.notifications,
+                color: ColorPalette.pureWhite,
+                size: isLanscape ? height * .03 : height * 0.03,
+              ),
             ],
           ),
-        ));
-  }
-
-  // field for entering search values
-  Widget _textField(double height, double width, bool isLanscape) {
-    return Container(
-      height: isLanscape ? height * .15 : height * 0.09,
-      padding: EdgeInsets.symmetric(
-          horizontal: width * 0.035, vertical: height * 0.02),
-      child: TextFormField(
-        decoration: InputDecoration(
-            focusColor: ColorPalette.pureWhite,
-            focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide:
-                    BorderSide(color: ColorPalette.pureWhite, width: 2)),
-            fillColor: ColorPalette.pureWhite,
-            filled: true,
-            hintText: 'Search',
-            hintStyle: TextStyle(
-              color: ColorPalette.darkSlateBlue,
-              fontStyle: FontStyle.italic,
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-            )),
-        cursorColor: ColorPalette.navyBlack,
-        textAlignVertical: TextAlignVertical.center,
-      ),
+        )
     );
   }
-  // carouselview
-
-  Widget _curoselview(bool isLandscape, double height, double width) {
-    return Column(
-      children: [
-        SizedBox(
-          height: isLandscape ? height * 0.04 : height * 0.04,
-        ),
-        SizedBox(
-          height: isLandscape ? height * .3 : height * 0.2,
-          width: MediaQuery.sizeOf(context).width,
-          child: CarouselSlider(
-              options: CarouselOptions(
-                  enlargeCenterPage: true,
-                  padEnds: false,
-                  enableInfiniteScroll: false,
-                  viewportFraction: isLandscape ? .85 : 0.75,
-                  onPageChanged: (index, _) =>
-                      controller.updatePgaeIndicator(index.toDouble()),
-                  autoPlay: true,
-                  pauseAutoPlayOnTouch: true),
-              items: [
-                // InkWell(
-                //   onTap: () {},
-                //   child: Image(
-                //     height: isLandscape ? height * .3 : height * 0.2,
-                //     width: isLandscape ? width * .85 : width * 0.75,
-                //     image: Image.asset(
-                //       'assets/images/learnToday.png',
-                //     ).image,
-                //     fit: BoxFit.contain,
-                //   ),
-                // ),
-                InkWell(
-                  onTap: () {},
-                  child: _innerElement(100, 149, 237, "What would you",
-                      "like to learn", "today?", height, width, isLandscape),
-                ),
-                InkWell(
-                  onTap: () {},
-                  child: _innerElement(205, 149, 57, "Which topics to",
-                      "explore", "today?", height, width, isLandscape),
-                ),
-                InkWell(
-                  child: _innerElement(205, 57, 109, "When is the",
-                      "next event ", "happening", height, width, isLandscape),
-                  onTap: () {},
-                ),
-                InkWell(
-                  child: _innerElement(57, 205, 74, "What are the", "lastest",
-                      "projects?", height, width, isLandscape),
-                  onTap: () {},
-                ),
-              ]),
-        ),
-      ],
-    );
-  }
-
-  // custom widget for enetering each carouselview page
 
   Widget _innerElement(int red, int green, int blue, String line1, String line2,
       String line3, double height, double width, bool isLandscape) {
@@ -700,7 +558,7 @@ Widget myCommunityList(bool isLandscape, double height, double width) {
                             decoration: BoxDecoration(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(8)),
-                              color: Color(0xffE3E3E3),
+                              color: const Color(0xFFFFF5E1).withOpacity(0.8),
                             ),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -740,15 +598,6 @@ Future<List<CommunityModel>> fetchAllCommunity() async {
       await FirebaseFirestore.instance.collection('Communities').get();
   return snapshot.docs
       .map((doc) => CommunityModel.fromMap(doc.data() as Map<String, dynamic>))
-      .toList();
-}
-
-Future<List<CourseModel>> fetchAllCourses() async {
-  final QuerySnapshot snapshot =
-      await FirebaseFirestore.instance.collection('Courses').get();
-
-  return snapshot.docs
-      .map((doc) => CourseModel.fromJson(doc.data() as Map<String, dynamic>))
       .toList();
 }
 
@@ -1083,235 +932,4 @@ Future<List<EventOption>> fetchAllEvents() async {
     final data = doc.data() as Map<String, dynamic>;
     return EventOption.fromFirestore(data, doc.id);
   }).toList();
-}
-
-class AnvikshikiScreen extends StatelessWidget {
-  const AnvikshikiScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: Text('Bawal macha diye the ekdum')),
-    );
-  }
-}
-
-class HacktoberScreen extends StatelessWidget {
-  const HacktoberScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: Text('Hacktober Fest ')),
-    );
-  }
-}
-
-class Courses {
-  final String title;
-  final String subtitle;
-  final String image;
-
-  Courses({
-    required this.title,
-    required this.subtitle,
-    required this.image,
-  });
-
-  // factory constructor for Firestore, if needed
-  factory Courses.fromFirestore(Map<String, dynamic> data, String docId) {
-    return Courses(
-      title: data['title'] ?? docId,
-      subtitle: data['moreInfo'] ?? '',
-      image: data['imageUrl'] ?? 'assets/images/default.png',
-    );
-  }
-}
-
-class CourseCard extends StatelessWidget {
-  final CourseModel course;
-  final double width;
-  final double height;
-  final bool isLandscape;
-  const CourseCard({
-    Key? key,
-    required this.course,
-    required this.width,
-    required this.height,
-    required this.isLandscape,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      // On tap, navigate to detail page with Hero transition
-      onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => CourseDetailPage(course: course),
-          ),
-        );
-      },
-      child: Hero(
-        tag: course.title, // must match the detail screen Hero tag
-        child: Container(
-          // styling similar to your original code
-          width: isLandscape ? width * 1 : width * 0.9,
-          height: isLandscape ? height * .2 : height * 0.11,
-          margin: const EdgeInsets.symmetric(vertical: 8),
-          child: Row(
-            children: [
-              // IMAGE
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.network(
-                  course.image,
-                  height: isLandscape ? height * .22 : height * 0.13,
-                  width: width * 0.3,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              const SizedBox(width: 5),
-              // TEXT
-              Expanded(
-                child: SizedBox(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // Title (maxLines=2)
-                      Text(
-                        course.title,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        maxLines: 2,
-                      ),
-                      // Subtitle (maxLines=3)
-                      Text(
-                        course.subtitle,
-                        style: const TextStyle(
-                          fontSize: 8,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        maxLines: 3,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class CourseDetailPage extends StatelessWidget {
-  final CourseModel course;
-
-  const CourseDetailPage({Key? key, required this.course}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(course.title),
-        backgroundColor: Colors.white,
-      ),
-      body: Center(
-        child: Hero(
-          tag: course.title, // must match the list page
-          child: Material(
-            color: Colors.transparent,
-            child: SingleChildScrollView(
-              child: Container(
-                // Make it fill horizontally if you wish
-                width: size.width * 0.9,
-                margin: const EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Course image
-                    ClipRRect(
-                      borderRadius: const BorderRadius.vertical(
-                        top: Radius.circular(12),
-                      ),
-                      child: Image.network(
-                        course.image,
-                        width: double.infinity,
-                        height: 200,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    // Course text
-                    Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            course.title,
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            course.subtitle,
-                            style: const TextStyle(fontSize: 14),
-                          ),
-                          const SizedBox(height: 16),
-                          // extraInfo can be displayed in full here
-                          if (course.subtitle != null &&
-                              course.subtitle!.isNotEmpty) ...[
-                            const Text(
-                              "More Info:",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 6),
-                            Text(
-                              course.subtitle,
-                              style: const TextStyle(fontSize: 14),
-                            ),
-                          ],
-                        ],
-                      ),
-                    ),
-                    ElevatedButton(
-                        onPressed: () {
-                          Get.to(MyRoadMapScreen(myCourse: course));
-                        },
-                        style: ButtonStyle(
-                            backgroundColor:
-                                WidgetStatePropertyAll(Colors.grey[200])),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text("RoadMap"),
-                            Icon(Icons.keyboard_arrow_right_outlined)
-                          ],
-                        )),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 }
