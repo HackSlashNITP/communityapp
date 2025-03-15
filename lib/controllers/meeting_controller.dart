@@ -17,7 +17,7 @@ class VideoCallController extends GetxController {
   final rtcToken = ''.obs;
   final channelName = ''.obs;
   final int uid = Random().nextInt(90000) + 10000;
-
+  final RxMap<int, bool> remoteVideoStates = <int, bool>{}.obs;
   @override
   void onInit() {
     super.onInit();
@@ -43,9 +43,14 @@ class VideoCallController extends GetxController {
             },
             onUserJoined: (connection, remoteUid, elapsed) {
               users.add(remoteUid);
+              remoteVideoStates[remoteUid] = true;
             },
             onUserOffline: (connection, remoteUid, reason) {
               users.remove(remoteUid);
+              remoteVideoStates.remove(remoteUid);
+            },
+            onUserMuteVideo: (RtcConnection connection, int uid, bool muted) {
+              remoteVideoStates[uid] = !muted; // Update video state when a user mutes/unmutes video
             },
           ),
         );
@@ -122,6 +127,7 @@ class VideoCallController extends GetxController {
   void toggleMute() {
     isMuted.value = !isMuted.value;
     engine.muteLocalAudioStream(isMuted.value);
+
   }
 
   void toggleVideo() {
