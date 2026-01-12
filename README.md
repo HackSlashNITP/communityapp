@@ -1,7 +1,77 @@
-Working Prototype
+
+# Community App
+
+A Flutter-based community platform developed for **HackSlash Coding Club** to enable collaboration, content sharing, real-time communication, and event management.
+
+---
+
+## 📌 About the Project
+
+The Community App was built to provide a centralized digital platform for students and developers to collaborate, communicate, and participate in community-driven activities.  
+The application focuses on scalability, real-time interaction, and clean architecture using modern Flutter development practices.
+
+---
+
+## ✨ Key Features
+
+- 🔐 Secure user authentication using Firebase Auth  
+- 🏠 Community feed for announcements and content sharing  
+- 💬 Real-time chat using Firebase Realtime Database  
+- 🎥 Video meetings integration using Agora API  
+- 📚 Learning and resource-sharing module  
+- 👤 User profile management  
+- 📅 Event management system  
+- 💾 Local storage using Hive  
+- ⚡ Reactive UI with GetX state management  
+
+---
+
+## 🚀 Working Prototype
+
 https://drive.google.com/file/d/141LoPm9ikwKmZ_Mpwb64nAC-5g16jBJV/view?usp=drivesdk
-# CommunityApp
-Project Structure
+
+A fully functional **working prototype** has been developed demonstrating:
+- Authentication flow
+- Real-time chat
+- Video meeting functionality
+- Community feed
+- Profile and learning modules
+
+The prototype validates the core system architecture and feature feasibility.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend:** Flutter  
+- **State Management:** GetX  
+- **Backend Services:** Firebase  
+- **Authentication:** Firebase Auth  
+- **Database:** Firebase Realtime Database  
+- **Video Calling:** Agora API  
+- **Local Storage:** Hive  
+- **Media Storage:** Cloudinary  
+
+---
+
+## 🧱 App Architecture
+
+The application follows a **modular MVC-based architecture** using GetX:
+
+- **Controllers** handle state and business logic  
+- **Views** manage UI components  
+- **Services** encapsulate API and backend interactions  
+- **Models** represent structured application data  
+
+This architecture ensures:
+- Scalability  
+- Maintainability  
+- Clear separation of concerns  
+
+---
+
+## 📁 Folder Structure
+
 ```bash
 lib/
 │
@@ -56,6 +126,3 @@ lib/
 │   ├── colors.dart                # File for defining color constants
 │
 └── main.dart                      # Main app entry point, where GetX bindings are set up
-=======
-# CommunityApp
-
